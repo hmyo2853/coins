@@ -4,39 +4,46 @@ import styled from "styled-components";
 
 function App() {
   const [isLoading, setLoading] = useState(true);
-  const [coins, setCoins] = useState([]);
+  const [data, setDatas] = useState([]);
+  const [title, setTitle] = useState("");
+  const [day, setDay] = useState("");
+  const API_KEY = process.env.MOVE_PRIVATE_API_KEY;
+  const getData = async (day) => {
+    await axios
+      .get(
+        "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json",
+        {
+          params: {
+            key: API_KEY,
+            targetDt: day,
+          },
+        }
+      )
+      .then((response) => {
+        setTitle(response.data.boxOfficeResult.boxofficeType);
+        setDatas(response.data.boxOfficeResult.dailyBoxOfficeList);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("error type : ", error.response);
+        return null;
+      });
+  };
+  console.log(data);
   useEffect(() => {
-    const getData = async () => {
-      await axios
-        .get("https://api.coinpaprika.com/v1/tickers?quotes=KRW")
-        .then((items) => {
-          setCoins(items.data.slice(0, 100));
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log("error type : ", error);
-          return null;
-        });
-    };
-    getData();
+    const date = new Date();
+    setDay(
+      new Date(date.setDate(date.getDate() - 1))
+        .toLocaleDateString()
+        .split(/\.|\s/)
+        .join("")
+    );
+    getData(day);
   }, []);
-  console.log(coins);
   return (
     <>
-      <Text>{isLoading ? "loading...." : `${coins.length}`}</Text>
-      <Container>
-        {isLoading ? (
-          <strong>Loading...</strong>
-        ) : (
-          <div>
-            {coins.map((coin) => (
-              <p>
-                {coin.id} ({coin.symbol})
-              </p>
-            ))}
-          </div>
-        )}
-      </Container>
+      <Text>{isLoading ? "loading...." : `${title} TOP ${data.length}`}</Text>
+      <Container>{isLoading ? <strong>Loading...</strong> : null}</Container>
     </>
   );
 }
