@@ -5,7 +5,10 @@ import styled from "styled-components";
 function App() {
   const [isLoading, setLoading] = useState(true);
   const [data, setDatas] = useState([]);
-
+  const formPreventDefault = (e) => {
+    e.preventDefault();
+    alert("submit!");
+  };
   const getData = async () => {
     await axios
       .get("data/data.json")
@@ -31,7 +34,7 @@ function App() {
         ) : (
           <>
             <B>암호화폐 TOP 100 리스트</B>
-            <form>
+            <form onSubmit={formPreventDefault}>
               <Search></Search>
               <SubmitButton>Submit</SubmitButton>
             </form>
@@ -41,12 +44,22 @@ function App() {
                   <Td>랭크</Td>
                   <Td>종목</Td>
                   <Td>기호</Td>
-                  <Td>현재 시세(KRW)</Td>
+                  <Td>
+                    현재 시세 <Small>KRW</Small>
+                  </Td>
                   <Td>시가총액</Td>
-                  <Td>시가 가격변동률 (지난 24H)</Td>
-                  <Td>거래량 (지난 24H)</Td>
-                  <Td>변동 (지난 24H)</Td>
-                  <Td>변동 (지난 7일)</Td>
+                  <Td>
+                    가격변동률 <Small>지난 24H</Small>
+                  </Td>
+                  <Td>
+                    거래량 <Small>지난 24H</Small>
+                  </Td>
+                  <Td>
+                    변동 <Small>지난 24H</Small>
+                  </Td>
+                  <Td>
+                    변동 <Small>지난 7일</Small>
+                  </Td>
                 </Tr>
               </Thead>
               <Tbody>
@@ -92,6 +105,11 @@ const B = styled.div`
   font-weight: 600;
 `;
 
+const Small = styled.span`
+  font-size: 0.6rem;
+  color: gray;
+`;
+
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -116,12 +134,16 @@ const Search = styled.input.attrs({
   minLength: "1",
   maxLength: "50",
 })`
-  background-color: black;
-  color: white;
+  background-color: #f5f5f5;
+  color: black;
   width: 320px;
   padding: 16px 12px;
-  border: 0px;
   border-radius: 12px;
+  border: 1px solid #f5f5f5;
+  &:focus {
+    outline: none;
+    border: 1px solid red;
+  }
 `;
 
 const SubmitButton = styled.button``;
