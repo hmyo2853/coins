@@ -5,45 +5,67 @@ import styled from "styled-components";
 function App() {
   const [isLoading, setLoading] = useState(true);
   const [data, setDatas] = useState([]);
-  const [title, setTitle] = useState("");
-  const [day, setDay] = useState("");
-  const API_KEY = process.env.MOVE_PRIVATE_API_KEY;
-  const getData = async (day) => {
+
+  const getData = async () => {
     await axios
-      .get(
-        "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json",
-        {
-          params: {
-            key: API_KEY,
-            targetDt: day,
-          },
-        }
-      )
-      .then((response) => {
-        setTitle(response.data.boxOfficeResult.boxofficeType);
-        setDatas(response.data.boxOfficeResult.dailyBoxOfficeList);
+      .get("data/data.json")
+      .then((items) => {
+        setDatas(items.data.slice(0, 100));
         setLoading(false);
       })
       .catch((error) => {
-        console.log("error type : ", error.response);
+        console.log("error type : ", error);
         return null;
       });
   };
-  console.log(data);
   useEffect(() => {
-    const date = new Date();
-    setDay(
-      new Date(date.setDate(date.getDate() - 1))
-        .toLocaleDateString()
-        .split(/\.|\s/)
-        .join("")
-    );
-    getData(day);
+    getData();
   }, []);
+
   return (
     <>
-      <Text>{isLoading ? "loading...." : `${title} TOP ${data.length}`}</Text>
-      <Container>{isLoading ? <strong>Loading...</strong> : null}</Container>
+      <Text>{isLoading ? "loading...." : null}</Text>
+      <Container>
+        {isLoading ? (
+          <strong>Loading...</strong>
+        ) : (
+          <>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Td>랭크</Td>
+                  <Td>종목</Td>
+                  <Td>기호</Td>
+                  <Td>현재 시세(KRW)</Td>
+                  <Td>총 시가</Td>
+                  <Td>시가 가격변동률 24H</Td>
+                  <Td>거래량 24H</Td>
+                  <Td>변동 24H</Td>
+                  <Td>변동 7D</Td>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.map((items) => (
+                  <Tr key={items.id}>
+                    <Td>{items.rank}</Td>
+                    <Td>{items.name}</Td>
+                    <Td>{items.symbol}</Td>
+                    <Td>{items.quotes.KRW.price}</Td>
+                    <Td>{items.quotes.KRW.market_cap}</Td>
+                    <Td>{items.quotes.KRW.market_cap_change_24h}%</Td>
+                    <Td>
+                      {(items.quotes.KRW.volume_24h / 1000000000000).toFixed(2)}
+                      T
+                    </Td>
+                    <Td>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</Td>
+                    <Td>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </>
+        )}
+      </Container>
     </>
   );
 }
@@ -56,4 +78,16 @@ const Text = styled.div`
 
 const Container = styled.div``;
 
+const Table = styled.table`
+  border: 1px solid black;
+  border-spacing: 0px;
+`;
+
+const Thead = styled.thead``;
+const Tbody = styled.tbody``;
+const Td = styled.td`
+  border: 1px solid black;
+  border-spacing: 0px;
+`;
+const Tr = styled.tr``;
 export default App;
