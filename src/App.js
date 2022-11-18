@@ -5,9 +5,14 @@ import styled from "styled-components";
 function App() {
   const [isLoading, setLoading] = useState(true);
   const [data, setDatas] = useState([]);
-  const formPreventDefault = (e) => {
-    e.preventDefault();
-    alert("submit!");
+  const [searchText, setSearchText] = useState("");
+
+  const inputChangeText = (e) => {
+    setSearchText(e.target.value.replace(/ /g, ""));
+  };
+
+  const onRefresh = () => {
+    window.location.reload();
   };
   const getData = async () => {
     await axios
@@ -34,64 +39,74 @@ function App() {
         ) : (
           <>
             <B>암호화폐 TOP 100 리스트</B>
-            <form onSubmit={formPreventDefault}>
-              <Search></Search>
-              <SubmitButton>Submit</SubmitButton>
-            </form>
-            <Table>
-              <Thead>
-                <Tr>
-                  <Td>랭크</Td>
-                  <Td>종목</Td>
-                  <Td>기호</Td>
-                  <Td>
-                    현재 시세 <Small>KRW</Small>
-                  </Td>
-                  <Td>시가총액</Td>
-                  <Td>
-                    가격변동률 <Small>지난 24H</Small>
-                  </Td>
-                  <Td>
-                    거래량 <Small>지난 24H</Small>
-                  </Td>
-                  <Td>
-                    변동 <Small>지난 24H</Small>
-                  </Td>
-                  <Td>
-                    변동 <Small>지난 7일</Small>
-                  </Td>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data.map((items) => (
-                  <Tr key={items.id}>
-                    <Td>{items.rank}</Td>
-                    <Td>{items.name}</Td>
-                    <Td>{items.symbol}</Td>
-                    <Td>
+            <Search onChange={inputChangeText}></Search>
+            <Button onClick={onRefresh}>Refresh</Button>
+            <DivWrap>
+              <TableDiv>
+                <LankDiv>랭크</LankDiv>
+                <NameDiv>종목</NameDiv>
+                <SymbolDiv>기호</SymbolDiv>
+                <PriceDiv>
+                  현재 시세 <Small>KRW</Small>
+                </PriceDiv>
+                <CapDiv>시가총액</CapDiv>
+                <Cap24Div>
+                  가격변동률 <Small>지난 24H</Small>
+                </Cap24Div>
+                <VolumDiv>
+                  거래량 <Small>지난 24H</Small>
+                </VolumDiv>
+                <Change24Div>
+                  변동 <Small>지난 24H</Small>
+                </Change24Div>
+                <Change7Div>
+                  변동 <Small>지난 7일</Small>
+                </Change7Div>
+              </TableDiv>
+              {data
+                .filter((items) => {
+                  if (
+                    items.name.toLowerCase().includes(searchText.toLowerCase())
+                  ) {
+                    return items;
+                  }
+                })
+                .map((items) => (
+                  <TableDiv key={items.id}>
+                    <LankDiv>{items.rank}</LankDiv>
+                    <NameDiv>{items.name}</NameDiv>
+                    <SymbolDiv>{items.symbol}</SymbolDiv>
+                    <PriceDiv>
                       {Math.ceil(items.quotes.KRW.price).toLocaleString(
                         "ko-KR"
                       )}
                       원
-                    </Td>
-                    <Td>
+                    </PriceDiv>
+                    <CapDiv>
                       {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
                         "ko-KR"
                       )}
                       원
-                    </Td>
-                    <Td>{items.quotes.KRW.market_cap_change_24h}%</Td>
-                    <Td>{items.quotes.KRW.volume_24h.toFixed(2)}</Td>
-                    {items.quotes.KRW.percent_change_24h.toFixed(2) == 0 ? (
-                      <Td>0%</Td>
+                    </CapDiv>
+                    <Cap24Div>
+                      {items.quotes.KRW.market_cap_change_24h}%
+                    </Cap24Div>
+                    <VolumDiv>
+                      {Math.ceil(items.quotes.KRW.volume_24h)}
+                    </VolumDiv>
+                    {items.quotes.KRW.percent_change_24h.toFixed(2) === 0 ? (
+                      <Change24Div>0%</Change24Div>
                     ) : (
-                      <Td>{items.quotes.KRW.percent_change_24h.toFixed(2)}</Td>
+                      <Change24Div>
+                        {items.quotes.KRW.percent_change_24h.toFixed(2)}%
+                      </Change24Div>
                     )}
-                    <Td>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</Td>
-                  </Tr>
+                    <Change7Div>
+                      {items.quotes.KRW.percent_change_7d.toFixed(2)}%
+                    </Change7Div>
+                  </TableDiv>
                 ))}
-              </Tbody>
-            </Table>
+            </DivWrap>
           </>
         )}
       </Container>
@@ -100,7 +115,6 @@ function App() {
 }
 
 const B = styled.div`
-  display: flex;
   font-size: 2rem;
   font-weight: 600;
 `;
@@ -110,26 +124,40 @@ const Small = styled.span`
   color: gray;
 `;
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-`;
+const Container = styled.div``;
 
-const Table = styled.table`
+const DivWrap = styled.div`
   border: 1px solid black;
   border-spacing: 0px;
 `;
 
-const Thead = styled.thead``;
-const Tbody = styled.tbody``;
-const Td = styled.td`
-  border: 1px solid black;
-  border-spacing: 0px;
+const TableDiv = styled.div`
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  grid-template-columns: auto;
 `;
-const Tr = styled.tr``;
+
+const LankDiv = styled.div``;
+
+const NameDiv = styled.div``;
+
+const SymbolDiv = styled.div``;
+
+const PriceDiv = styled.div``;
+
+const CapDiv = styled.div``;
+
+const Cap24Div = styled.div``;
+
+const VolumDiv = styled.div``;
+
+const Change24Div = styled.div``;
+
+const Change7Div = styled.div``;
+
 const Search = styled.input.attrs({
+  placeholder: "종목을 입력해주세요.",
   type: "text",
   minLength: "1",
   maxLength: "50",
@@ -146,6 +174,6 @@ const Search = styled.input.attrs({
   }
 `;
 
-const SubmitButton = styled.button``;
+const Button = styled.button``;
 
 export default App;
