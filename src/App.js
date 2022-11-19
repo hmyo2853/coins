@@ -26,7 +26,7 @@ function App() {
 
   const getData = async () => {
     await axios
-      .get("data/data.json")
+      .get("https://api.coinpaprika.com/v1/tickers?quotes=KRW")
       .then((items) => {
         setDatas(items.data.slice(0, 100));
         setLoading(false);
@@ -88,35 +88,45 @@ function App() {
                   변동 <Small>지난 7일</Small>
                 </Change7Div>
               </TableDiv>
-              {filterdData.map((items) => (
-                <TableDiv key={items.id}>
-                  <LankDiv>{items.rank}</LankDiv>
-                  <NameDiv>{items.name}</NameDiv>
-                  <SymbolDiv>{items.symbol}</SymbolDiv>
-                  <PriceDiv>
-                    {Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}
-                    원
-                  </PriceDiv>
-                  <CapDiv>
-                    {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
-                      "ko-KR"
+              {filterdData.length === 0 ? (
+                <>없습니다</>
+              ) : (
+                filterdData.map((items) => (
+                  <TableDiv key={items.id}>
+                    <LankDiv>{items.rank}</LankDiv>
+                    <NameDiv>{items.name}</NameDiv>
+                    <SymbolDiv>{items.symbol}</SymbolDiv>
+                    <PriceDiv>
+                      {Math.ceil(items.quotes.KRW.price).toLocaleString(
+                        "ko-KR"
+                      )}
+                      원
+                    </PriceDiv>
+                    <CapDiv>
+                      {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
+                        "ko-KR"
+                      )}
+                      원
+                    </CapDiv>
+                    <Cap24Div>
+                      {items.quotes.KRW.market_cap_change_24h}%
+                    </Cap24Div>
+                    <VolumDiv>
+                      {Math.ceil(items.quotes.KRW.volume_24h)}
+                    </VolumDiv>
+                    {items.quotes.KRW.percent_change_24h.toFixed(2) === 0 ? (
+                      <Change24Div>0%</Change24Div>
+                    ) : (
+                      <Change24Div>
+                        {items.quotes.KRW.percent_change_24h.toFixed(2)}%
+                      </Change24Div>
                     )}
-                    원
-                  </CapDiv>
-                  <Cap24Div>{items.quotes.KRW.market_cap_change_24h}%</Cap24Div>
-                  <VolumDiv>{Math.ceil(items.quotes.KRW.volume_24h)}</VolumDiv>
-                  {items.quotes.KRW.percent_change_24h.toFixed(2) === 0 ? (
-                    <Change24Div>0%</Change24Div>
-                  ) : (
-                    <Change24Div>
-                      {items.quotes.KRW.percent_change_24h.toFixed(2)}%
-                    </Change24Div>
-                  )}
-                  <Change7Div>
-                    {items.quotes.KRW.percent_change_7d.toFixed(2)}%
-                  </Change7Div>
-                </TableDiv>
-              ))}
+                    <Change7Div>
+                      {items.quotes.KRW.percent_change_7d.toFixed(2)}%
+                    </Change7Div>
+                  </TableDiv>
+                ))
+              )}
             </DivWrap>
           </>
         )}
@@ -135,7 +145,10 @@ const Small = styled.span`
   color: gray;
 `;
 
-const Container = styled.div``;
+const Container = styled.div`
+  min-width: 800px;
+  max-width: 1000px;
+`;
 
 const DivWrap = styled.div`
   border: 1px solid black;
@@ -149,23 +162,50 @@ const TableDiv = styled.div`
   grid-template-columns: auto;
 `;
 
-const LankDiv = styled.div``;
+const LankDiv = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const NameDiv = styled.div``;
+const NameDiv = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const SymbolDiv = styled.div``;
+const SymbolDiv = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const PriceDiv = styled.div``;
+const PriceDiv = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const CapDiv = styled.div``;
+const CapDiv = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const Cap24Div = styled.div``;
+const Cap24Div = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const VolumDiv = styled.div``;
+const VolumDiv = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const Change24Div = styled.div``;
+const Change24Div = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
-const Change7Div = styled.div``;
+const Change7Div = styled.div`
+  padding: 1rem;
+  border-bottom: 1px solid gray;
+`;
 
 const Search = styled.input.attrs({
   placeholder: "종목을 입력해주세요.",
@@ -176,17 +216,20 @@ const Search = styled.input.attrs({
   background-color: #f5f5f5;
   color: black;
   width: 320px;
-  padding: 16px 12px;
+  padding: 1rem 2rem;
   border-radius: 12px;
-  border: 1px solid #f5f5f5;
+  border: 2px solid #f5f5f5;
   &:focus {
     outline: none;
-    border: 1px solid red;
+    border: 2px solid blueviolet;
   }
 `;
 
 const Button = styled.button`
   all: unset;
+  padding: 1rem 2rem;
+  background-color: #cdcdcd;
+  border-radius: 0.5rem;
 `;
 
 export default App;

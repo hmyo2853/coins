@@ -1,4 +1,5 @@
 {
+  "homepage": "https://hmyo2853.github.io/coins",
   "name": "react-practice-toy-project",
   "version": "0.1.0",
   "private": true,
@@ -19,7 +20,6 @@
     "web-vitals": "^2.1.4",
     "xml-js": "^1.6.11"
   },
-  "homepage": "https://hmyo2853.github.io/coins",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
