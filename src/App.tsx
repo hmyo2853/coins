@@ -71,7 +71,6 @@ const App = function () {
 
 	return (
 		<div className={appStyles.Container}>
-			{isLoading ? <Bold>loading....</Bold> : null}
 			{isLoading ? (
 				<strong>Loading...</strong>
 			) : (
