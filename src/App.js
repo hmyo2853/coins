@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function App() {
   const [isLoading, setLoading] = useState(true);
   const [data, setDatas] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [isMouseOver, setRotate] = useState(false);
 
   const inputChangeText = (e) => {
     setSearchText(e.target.value.replace(/ /g, ""));
@@ -14,6 +17,13 @@ function App() {
   const onRefresh = () => {
     window.location.reload();
   };
+
+  const filterdData = data.filter((items) => {
+    if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
+      return items;
+    }
+  });
+
   const getData = async () => {
     await axios
       .get("data/data.json")
@@ -26,6 +36,7 @@ function App() {
         return null;
       });
   };
+
   useEffect(() => {
     getData();
   }, []);
@@ -40,7 +51,21 @@ function App() {
           <>
             <B>암호화폐 TOP 100 리스트</B>
             <Search onChange={inputChangeText}></Search>
-            <Button onClick={onRefresh}>Refresh</Button>
+            <Button
+              onClick={onRefresh}
+              onMouseOut={() => {
+                setRotate(false);
+              }}
+              onMouseOver={() => {
+                setRotate(true);
+              }}
+            >
+              {isMouseOver ? (
+                <FontAwesomeIcon icon={faArrowsRotate} className="fa-spin" />
+              ) : (
+                <FontAwesomeIcon icon={faArrowsRotate} />
+              )}
+            </Button>
             <DivWrap>
               <TableDiv>
                 <LankDiv>랭크</LankDiv>
@@ -63,49 +88,35 @@ function App() {
                   변동 <Small>지난 7일</Small>
                 </Change7Div>
               </TableDiv>
-              {data
-                .filter((items) => {
-                  if (
-                    items.name.toLowerCase().includes(searchText.toLowerCase())
-                  ) {
-                    return items;
-                  }
-                })
-                .map((items) => (
-                  <TableDiv key={items.id}>
-                    <LankDiv>{items.rank}</LankDiv>
-                    <NameDiv>{items.name}</NameDiv>
-                    <SymbolDiv>{items.symbol}</SymbolDiv>
-                    <PriceDiv>
-                      {Math.ceil(items.quotes.KRW.price).toLocaleString(
-                        "ko-KR"
-                      )}
-                      원
-                    </PriceDiv>
-                    <CapDiv>
-                      {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
-                        "ko-KR"
-                      )}
-                      원
-                    </CapDiv>
-                    <Cap24Div>
-                      {items.quotes.KRW.market_cap_change_24h}%
-                    </Cap24Div>
-                    <VolumDiv>
-                      {Math.ceil(items.quotes.KRW.volume_24h)}
-                    </VolumDiv>
-                    {items.quotes.KRW.percent_change_24h.toFixed(2) === 0 ? (
-                      <Change24Div>0%</Change24Div>
-                    ) : (
-                      <Change24Div>
-                        {items.quotes.KRW.percent_change_24h.toFixed(2)}%
-                      </Change24Div>
+              {filterdData.map((items) => (
+                <TableDiv key={items.id}>
+                  <LankDiv>{items.rank}</LankDiv>
+                  <NameDiv>{items.name}</NameDiv>
+                  <SymbolDiv>{items.symbol}</SymbolDiv>
+                  <PriceDiv>
+                    {Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}
+                    원
+                  </PriceDiv>
+                  <CapDiv>
+                    {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
+                      "ko-KR"
                     )}
-                    <Change7Div>
-                      {items.quotes.KRW.percent_change_7d.toFixed(2)}%
-                    </Change7Div>
-                  </TableDiv>
-                ))}
+                    원
+                  </CapDiv>
+                  <Cap24Div>{items.quotes.KRW.market_cap_change_24h}%</Cap24Div>
+                  <VolumDiv>{Math.ceil(items.quotes.KRW.volume_24h)}</VolumDiv>
+                  {items.quotes.KRW.percent_change_24h.toFixed(2) === 0 ? (
+                    <Change24Div>0%</Change24Div>
+                  ) : (
+                    <Change24Div>
+                      {items.quotes.KRW.percent_change_24h.toFixed(2)}%
+                    </Change24Div>
+                  )}
+                  <Change7Div>
+                    {items.quotes.KRW.percent_change_7d.toFixed(2)}%
+                  </Change7Div>
+                </TableDiv>
+              ))}
             </DivWrap>
           </>
         )}
@@ -174,6 +185,8 @@ const Search = styled.input.attrs({
   }
 `;
 
-const Button = styled.button``;
+const Button = styled.button`
+  all: unset;
+`;
 
 export default App;
