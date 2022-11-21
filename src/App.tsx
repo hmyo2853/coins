@@ -1,5 +1,8 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
+import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAsync } from "react-async";
 
 import mockData from "./assets/data.json";
 
@@ -11,6 +14,18 @@ import Button from "./components/Button";
 import Search from "./components/Search";
 import Div from "./components/Div";
 import Table from "./components/Table";
+
+const DataLoader = () => {
+  const getData = async () => {
+    const _fetch = await fetch(
+      `https://api.coinpaprika.com/v1/tickers?quotes=KRW`
+    );
+    return await _fetch.json();
+  };
+  return useAsync({
+    promiseFn: getData,
+  });
+};
 
 function App() {
   const [isMouseOver, setRotate] = useState(false);
@@ -34,7 +49,11 @@ function App() {
             setRotate(true);
           }}
         >
-          {isMouseOver ? <>버튼 오버</> : <>버튼</>}
+          {isMouseOver ? (
+            <FontAwesomeIcon icon={faArrowsRotate} className="fa-spin" />
+          ) : (
+            <FontAwesomeIcon icon={faArrowsRotate} />
+          )}
         </Button>
         <Table>mapping된 데이터 내용</Table>
       </Div>
