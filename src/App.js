@@ -3,6 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./App.css";
 
 function App() {
   const [isLoading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ function App() {
 
   const getData = async () => {
     await axios
-      .get("https://api.coinpaprika.com/v1/tickers?quotes=KRW")
+      .get("data/data.json")
       .then((items) => {
         setDatas(items.data.slice(0, 100));
         setLoading(false);
@@ -49,7 +50,7 @@ function App() {
           <strong>Loading...</strong>
         ) : (
           <>
-            <B>암호화폐 TOP 100 리스트</B>
+            <h1>암호화폐 TOP 100 리스트</h1>
             <Search onChange={inputChangeText}></Search>
             <Button
               onClick={onRefresh}
