@@ -33,8 +33,8 @@ const App = () => {
   const [searchText, setSearchText] = useState("");
   const [isMouseOver, setRotate] = useState(false);
 
-  const inputChangeText = (e: ChangeEvent) => {
-    setSearchText(e.target.value.replace(" ", ""));
+  const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.currentTarget.value.replace(" ", ""));
   };
 
   const onRefresh = () => {

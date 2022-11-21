@@ -6,7 +6,7 @@ const Search: React.FC<{
   placeholder?: string;
   maxLength?: number;
   minLength?: number;
-  onChange?: (e: ChangeEvent) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }> = ({ placeholder, maxLength, minLength, onChange }) => (
   <input
     className={styles.Search}
