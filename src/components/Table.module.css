@@ -1,0 +1,6 @@
+.Table {
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  grid-template-columns: auto;
+}
