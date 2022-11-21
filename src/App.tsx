@@ -1,10 +1,9 @@
 // @ts-check
 
-import { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAsync } from "react-async";
-import React from "react";
 
 /** CSS */
 import "./App.css";
@@ -24,7 +23,8 @@ const App = function () {
 	/** 데이터 가져오기 */
 	const getData = async (): Promise<CoinPaprika[]> => {
 		const _fetch = await fetch(
-			`https://api.coinpaprika.com/v1/tickers?quotes=KRW`
+			// `https://api.coinpaprika.com/v1/tickers?quotes=KRW`
+			`https://raw.githubusercontent.com/hmyo2853/coins/main/public/data/data.json`
 		);
 
 		if (!_fetch.ok)
@@ -33,13 +33,11 @@ const App = function () {
 		return _fetch.json();
 	};
 
-	const [reloadCnt, setReloadCnt] = useState(0);
 	const [searchText, setSearchText] = useState("");
 	const [isMouseOver, setRotate] = useState(false);
 
-	const { data, isLoading, error } = useAsync({
+	const { data, isPending, error, reload } = useAsync({
 		promiseFn: getData,
-		watch: reloadCnt,
 	});
 
 	const inputChangeText = (e: ChangeEvent) => {
@@ -47,7 +45,7 @@ const App = function () {
 	};
 
 	/** state 변경되면서 리랜더링 */
-	const onRefresh = () => setReloadCnt(reloadCnt + 1);
+	const onRefresh = () => reload();
 
 	/** 검색어가 없는 경우, 검색어가 매칭되는 경우 필터링 */
 	const filterData = (data: CoinPaprika[] | undefined) =>
@@ -55,10 +53,11 @@ const App = function () {
 			(v) => !searchText || new RegExp(searchText, "i").test(v.name)
 		);
 
-	console.log(isLoading, data, error);
+	console.log(error, isPending, data);
 
-	if (isLoading || !data) return <strong>Loading...</strong>;
 	if (error) return <strong>Unable to load data.</strong>;
+
+	if (isPending) return <strong>Loading...</strong>;
 
 	return (
 		<>
@@ -73,11 +72,10 @@ const App = function () {
 					setRotate(true);
 				}}
 			>
-				{isMouseOver ? (
-					<FontAwesomeIcon icon={faArrowsRotate} className="fa-spin" />
-				) : (
-					<FontAwesomeIcon icon={faArrowsRotate} />
-				)}
+				<FontAwesomeIcon
+					icon={faArrowsRotate}
+					className={isMouseOver ? "fa-spin" : ""}
+				/>
 			</Button>
 			<Div>
 				<Table>
@@ -127,4 +125,4 @@ const App = function () {
 	);
 };
 
-export default React.memo(App);
+export default App;
