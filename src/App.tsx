@@ -71,22 +71,30 @@ const App = function () {
 
 	return (
 		<>
-			<Bold>암호화폐 TOP 100 리스트</Bold>
-			<Search onChange={inputChangeText}></Search>
-			<Button
-				onClick={onRefresh}
-				onMouseOut={() => {
-					setRotate(false);
-				}}
-				onMouseOver={() => {
-					setRotate(true);
-				}}
-			>
-				<FontAwesomeIcon
-					icon={faArrowsRotate}
-					className={isMouseOver ? "fa-spin" : ""}
-				/>
-			</Button>
+			<header>
+				<h2>암호화폐 TOP 100 리스트</h2>
+				<div>
+					<Search onChange={inputChangeText}></Search>{" "}
+					<Button
+						onClick={onRefresh}
+						onMouseOut={() => {
+							setRotate(false);
+						}}
+						onMouseOver={() => {
+							setRotate(true);
+						}}
+					>
+						<FontAwesomeIcon
+							icon={faArrowsRotate}
+							className={isMouseOver ? "fa-spin" : ""}
+						/>
+					</Button>
+				</div>
+			</header>
+
+			<br />
+			<br />
+
 			<Table>
 				<TableRow>
 					<span>랭크</span>
@@ -109,29 +117,49 @@ const App = function () {
 						변동 <Small>지난 7일</Small>
 					</span>
 				</TableRow>
-				{(!isError &&
-					filterData(data as CoinPaprika[])?.map((items) => (
-						<TableRow key={items.id}>
-							<span>{items.rank}</span>
-							<span>{items.name}</span>
-							<span>{items.symbol}</span>
-							<span>
-								{Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}원
-							</span>
-							<span>
-								{Math.ceil(items.quotes.KRW.market_cap).toLocaleString("ko-KR")}
-								원
-							</span>
-							<span>{items.quotes.KRW.market_cap_change_24h}%</span>
-							<span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
-							{Math.round(items.quotes.KRW.percent_change_24h) === 0 ? (
-								<span>0%</span>
-							) : (
-								<span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
-							)}
-							<span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
-						</TableRow>
-					))) || <span>정보 없음</span>}
+				{(() => {
+					if (isError) {
+						return (
+							<div className="block">
+								<span>오류가 발생했습니다</span>
+								<br />
+								{(error as Error).message}
+							</div>
+						);
+					}
+
+					const _data = filterData(data as CoinPaprika[]);
+
+					if (!_data || _data?.length === 0)
+						return <div className="block">결과 없음.</div>;
+
+					return (
+						_data?.map((items) => (
+							<TableRow key={items.id}>
+								<span>{items.rank}</span>
+								<span>{items.name}</span>
+								<span>{items.symbol}</span>
+								<span>
+									{Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}원
+								</span>
+								<span>
+									{Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
+										"ko-KR"
+									)}
+									원
+								</span>
+								<span>{items.quotes.KRW.market_cap_change_24h}%</span>
+								<span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
+								{Math.round(items.quotes.KRW.percent_change_24h) === 0 ? (
+									<span>0%</span>
+								) : (
+									<span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
+								)}
+								<span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
+							</TableRow>
+						)) || <TableRow></TableRow>
+					);
+				})()}
 			</Table>
 		</>
 	);
