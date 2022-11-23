@@ -1,8 +1,7 @@
-import { ChangeEvent, useState } from "react";
-import styled from "styled-components";
+import { ChangeEvent, useState, useEffect } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAsync } from "react-async";
+import axios from "react-async";
 
 import mockData from "./assets/data.json";
 
@@ -14,21 +13,25 @@ import Button from "./components/Button";
 import Search from "./components/Search";
 import Div from "./components/Div";
 import Table from "./components/Table";
+import Thead from "./components/Thead";
 
-const DataLoader = () => {
-  const getData = async () => {
-    const _fetch = await fetch(
-      `https://api.coinpaprika.com/v1/tickers?quotes=KRW`
-    );
-    return await _fetch.json();
-  };
-  return useAsync({
-    promiseFn: getData,
-  });
-};
+const API_URL = "./assets/data.json";
+
+// const getData = async () => {
+//   await axios
+//     .get("data/data.json")
+//     .then((items) => {
+//       setDatas(items.data.slice(0, 100));
+//       setLoading(false);
+//     })
+//     .catch((error) => {
+//       console.log("error type : ", error);
+//       return null;
+//     });
+// };
 
 const App = () => {
-  const data = mockData;
+  const [data, setData] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [isMouseOver, setRotate] = useState(false);
@@ -46,6 +49,21 @@ const App = () => {
       return items;
     }
   });
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("src/assets/data.json");
+      const json = await response.json();
+      setData(json.slice(0, 100));
+    } catch (error) {
+      console.log("type : ", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -75,25 +93,17 @@ const App = () => {
           </Button>
           <Div>
             <Table>
-              <span>랭크</span>
-              <span>목록</span>
-              <span>기호</span>
-              <span>
-                현재 시세 <Small>KRW</Small>
-              </span>
-              <span>시가총액</span>
-              <span>
-                가격변동률 <Small>지난 24H</Small>
-              </span>
-              <span>
-                거래량 <Small>지난 24H</Small>
-              </span>
-              <span>
-                변동 <Small>지난 24H</Small>
-              </span>
-              <span>
-                거래량 <Small>지난 7일</Small>
-              </span>
+              <Thead
+                rank="랭크"
+                name="종목"
+                symbol="기호"
+                price="현재 시세 KRW"
+                market_cap="시가 총액"
+                market_cap_change_24h="지난 24H 가격변동률"
+                volume_24h="지난 24H 거래량"
+                percent_change_24h="지난 24H 변동"
+                percent_change_7d="지난 7일 거래량"
+              ></Thead>
               {filterdData.length === 0 ? (
                 <>검색 항목과 일치하는 종목이 없습니다.</>
               ) : (
