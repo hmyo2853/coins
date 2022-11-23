@@ -1,6 +1,6 @@
 // @ts-check
 
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAsync } from "react-async";
@@ -18,13 +18,13 @@ import Table from "./components/Table";
 import Button from "./components/Button";
 import Search from "./components/Search";
 import { CoinPaprika } from "./coinpaprika";
+import { useQuery } from "react-query";
 
 const App = function () {
 	/** 데이터 가져오기 */
 	const getData = async (): Promise<CoinPaprika[]> => {
 		const _fetch = await fetch(
-			// `https://api.coinpaprika.com/v1/tickers?quotes=KRW`
-			`https://raw.githubusercontent.com/hmyo2853/coins/main/public/data/data.json`
+			`https://api.coinpaprika.com/v1/tickers?quotes=KRW`
 		);
 
 		if (!_fetch.ok)
@@ -36,16 +36,17 @@ const App = function () {
 	const [searchText, setSearchText] = useState("");
 	const [isMouseOver, setRotate] = useState(false);
 
-	const { data, isPending, error, reload } = useAsync({
-		promiseFn: getData,
-	});
+	const { data, isLoading, isError, error, refetch } = useQuery(
+		"coins",
+		getData
+	);
 
 	const inputChangeText = (e: ChangeEvent) => {
 		setSearchText((e.target as HTMLInputElement).value.replace(" ", ""));
 	};
 
 	/** state 변경되면서 리랜더링 */
-	const onRefresh = () => reload();
+	const onRefresh = () => refetch();
 
 	/** 검색어가 없는 경우, 검색어가 매칭되는 경우 필터링 */
 	const filterData = (data: CoinPaprika[] | undefined) =>
@@ -53,11 +54,15 @@ const App = function () {
 			(v) => !searchText || new RegExp(searchText, "i").test(v.name)
 		);
 
-	console.log(error, isPending, data);
+	if (isError)
+		return (
+			<>
+				<strong>Unable to load data.</strong>
+				{(error as Error).message}
+			</>
+		);
 
-	if (error) return <strong>Unable to load data.</strong>;
-
-	if (isPending) return <strong>Loading...</strong>;
+	if (isLoading) return <strong>Loading...</strong>;
 
 	return (
 		<>
@@ -99,27 +104,29 @@ const App = function () {
 						변동 <Small>지난 7일</Small>
 					</span>
 				</Table>
-				{filterData(data)?.map((items) => (
-					<Table key={items.id}>
-						<span>{items.rank}</span>
-						<span>{items.name}</span>
-						<span>{items.symbol}</span>
-						<span>
-							{Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}원
-						</span>
-						<span>
-							{Math.ceil(items.quotes.KRW.market_cap).toLocaleString("ko-KR")}원
-						</span>
-						<span>{items.quotes.KRW.market_cap_change_24h}%</span>
-						<span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
-						{Math.round(items.quotes.KRW.percent_change_24h) === 0 ? (
-							<span>0%</span>
-						) : (
-							<span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
-						)}
-						<span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
-					</Table>
-				)) || <span>정보 없음</span>}
+				{(!isError &&
+					filterData(data as CoinPaprika[])?.map((items) => (
+						<Table key={items.id}>
+							<span>{items.rank}</span>
+							<span>{items.name}</span>
+							<span>{items.symbol}</span>
+							<span>
+								{Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}원
+							</span>
+							<span>
+								{Math.ceil(items.quotes.KRW.market_cap).toLocaleString("ko-KR")}
+								원
+							</span>
+							<span>{items.quotes.KRW.market_cap_change_24h}%</span>
+							<span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
+							{Math.round(items.quotes.KRW.percent_change_24h) === 0 ? (
+								<span>0%</span>
+							) : (
+								<span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
+							)}
+							<span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
+						</Table>
+					))) || <span>정보 없음</span>}
 			</Div>
 		</>
 	);
