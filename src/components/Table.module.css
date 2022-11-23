@@ -1,6 +1,6 @@
 .Table {
-	width: 100%;
-	display: inline-flex;
-	flex-direction: row;
-	grid-template-columns: auto;
+	border: 1px solid blue;
+
+	display: flex;
+	flex-direction: column;
 }
