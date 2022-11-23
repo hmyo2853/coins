@@ -1,9 +1,6 @@
 .Table {
 	box-shadow: 0 0 1rem grey;
 	border-radius: 4px;
-
-	display: flex;
-	flex-direction: column;
 }
 
 .Table > .block {
