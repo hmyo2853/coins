@@ -17,16 +17,18 @@ const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
   const [data, setData] = useState<Data[]>([]);
-  const [isLoading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [isMouseOver, setRotate] = useState(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [isMouseOver, setRotate] = useState<boolean>(false);
 
-  const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
+  const inputChangeText = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchText(e.currentTarget.value.replace(" ", ""));
+    return;
   };
 
-  const onRefresh = () => {
+  const onRefresh = (): void => {
     window.location.reload();
+    return;
   };
 
   const filterdData: Data[] = data.filter((items) => {
@@ -52,15 +54,16 @@ const App = () => {
     };
   }
 
-  const fetchData = async () => {
+  const fetchData = async (): Promise<Data[] | void> => {
     try {
       const response = await fetch(API_URL);
       const json = await response.json();
       const slice = json.slice(0, 100) as Data[];
       setData(slice);
+      setLoading(false);
     } catch (error) {
       console.log("type : ", error);
-      return null;
+      return;
     }
   };
 
