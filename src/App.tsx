@@ -1,10 +1,6 @@
-import { ChangeEvent, useState } from "react";
-import styled from "styled-components";
+import { ChangeEvent, useState, useEffect } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAsync } from "react-async";
-
-import mockData from "./assets/data.json";
 
 import "./App.css";
 
@@ -14,38 +10,67 @@ import Button from "./components/Button";
 import Search from "./components/Search";
 import Div from "./components/Div";
 import Table from "./components/Table";
+import Thead from "./components/Thead";
 
-const DataLoader = () => {
-  const getData = async () => {
-    const _fetch = await fetch(
-      `https://api.coinpaprika.com/v1/tickers?quotes=KRW`
-    );
-    return await _fetch.json();
-  };
-  return useAsync({
-    promiseFn: getData,
-  });
-};
+// const API_URL = "src/assets/data.json";
+const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
-  const data = mockData;
-  const [isLoading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [isMouseOver, setRotate] = useState(false);
+  const [data, setData] = useState<Data[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [isMouseOver, setRotate] = useState<boolean>(false);
 
-  const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
+  const inputChangeText = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchText(e.currentTarget.value.replace(" ", ""));
+    return;
   };
 
-  const onRefresh = () => {
+  const onRefresh = (): void => {
     window.location.reload();
+    return;
   };
 
-  const filterdData = data.filter((items) => {
+  const filterdData: Data[] = data.filter((items) => {
     if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
       return items;
     }
   });
+
+  interface Data {
+    id?: string;
+    rank: string;
+    name: string;
+    symbol: string;
+    quotes: {
+      KRW: {
+        price: number;
+        market_cap: number;
+        market_cap_change_24h: number;
+        volume_24h: number;
+        percent_change_24h: number;
+        percent_change_7d: number;
+      };
+    };
+  }
+
+  const fetchData = async (): Promise<Data[] | void> => {
+    try {
+      const response = await fetch(API_URL);
+      const json = await response.json();
+      const slice = json.slice(0, 100) as Data[];
+      setData(slice);
+      setLoading(false);
+    } catch (error) {
+      console.log("type : ", error);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    console.log(data, typeof data, typeof data[1]);
+  }, []);
 
   return (
     <>
@@ -75,25 +100,17 @@ const App = () => {
           </Button>
           <Div>
             <Table>
-              <span>랭크</span>
-              <span>목록</span>
-              <span>기호</span>
-              <span>
-                현재 시세 <Small>KRW</Small>
-              </span>
-              <span>시가총액</span>
-              <span>
-                가격변동률 <Small>지난 24H</Small>
-              </span>
-              <span>
-                거래량 <Small>지난 24H</Small>
-              </span>
-              <span>
-                변동 <Small>지난 24H</Small>
-              </span>
-              <span>
-                거래량 <Small>지난 7일</Small>
-              </span>
+              <Thead
+                rank="랭크"
+                name="종목"
+                symbol="기호"
+                price="현재 시세 KRW"
+                market_cap="시가 총액"
+                market_cap_change_24h="지난 24H 가격변동률"
+                volume_24h="지난 24H 거래량"
+                percent_change_24h="지난 24H 변동"
+                percent_change_7d="지난 7일 거래량"
+              ></Thead>
               {filterdData.length === 0 ? (
                 <>검색 항목과 일치하는 종목이 없습니다.</>
               ) : (
