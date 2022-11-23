@@ -1,9 +1,6 @@
 import { ChangeEvent, useState, useEffect } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "react-async";
-
-import mockData from "./assets/data.json";
 
 import "./App.css";
 
@@ -15,23 +12,11 @@ import Div from "./components/Div";
 import Table from "./components/Table";
 import Thead from "./components/Thead";
 
-const API_URL = "./assets/data.json";
-
-// const getData = async () => {
-//   await axios
-//     .get("data/data.json")
-//     .then((items) => {
-//       setDatas(items.data.slice(0, 100));
-//       setLoading(false);
-//     })
-//     .catch((error) => {
-//       console.log("error type : ", error);
-//       return null;
-//     });
-// };
+// const API_URL = "src/assets/data.json";
+const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Data[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [isMouseOver, setRotate] = useState(false);
@@ -44,17 +29,35 @@ const App = () => {
     window.location.reload();
   };
 
-  const filterdData = data.filter((items) => {
+  const filterdData: Data[] = data.filter((items) => {
     if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
       return items;
     }
   });
 
+  interface Data {
+    id?: string;
+    rank: string;
+    name: string;
+    symbol: string;
+    quotes: {
+      KRW: {
+        price: number;
+        market_cap: number;
+        market_cap_change_24h: number;
+        volume_24h: number;
+        percent_change_24h: number;
+        percent_change_7d: number;
+      };
+    };
+  }
+
   const fetchData = async () => {
     try {
-      const response = await fetch("src/assets/data.json");
+      const response = await fetch(API_URL);
       const json = await response.json();
-      setData(json.slice(0, 100));
+      const slice = json.slice(0, 100) as Data[];
+      setData(slice);
     } catch (error) {
       console.log("type : ", error);
       return null;
@@ -63,6 +66,7 @@ const App = () => {
 
   useEffect(() => {
     fetchData();
+    console.log(data, typeof data, typeof data[1]);
   }, []);
 
   return (
