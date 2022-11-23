@@ -1,9 +1,16 @@
 // @ts-check
 
+/**
+ * React Query 참조
+ * @link https://kyounghwan01.github.io/blog/React/react-query/basic/#usequery
+ *
+ * CSS; Flex 이해하기
+ * @link https://studiomeal.com/archives/197
+ */
+
 import { ChangeEvent, useState } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAsync } from "react-async";
 
 /** CSS */
 import "./App.css";
@@ -12,7 +19,7 @@ import "./App.css";
 // B -> Bold; 외부 컴포넌트 선언 대체
 import Bold from "./components/Bold";
 import Small from "./components/Small";
-import Div from "./components/Div";
+import TableRow from "./components/TableRow";
 // TableDiv -> Table; 외부 컴포넌트 선언 대체
 import Table from "./components/Table";
 import Button from "./components/Button";
@@ -23,9 +30,7 @@ import { useQuery } from "react-query";
 const App = function () {
 	/** 데이터 가져오기 */
 	const getData = async (): Promise<CoinPaprika[]> => {
-		const _fetch = await fetch(
-			`https://api.coinpaprika.com/v1/tickers?quotes=KRW`
-		);
+		const _fetch = await fetch(import.meta.env.VITE_REQUEST_URL);
 
 		if (!_fetch.ok)
 			throw new Error(`HTTP Error: status code is ${_fetch.status}.`);
@@ -82,8 +87,8 @@ const App = function () {
 					className={isMouseOver ? "fa-spin" : ""}
 				/>
 			</Button>
-			<Div>
-				<Table>
+			<Table>
+				<TableRow>
 					<span>랭크</span>
 					<span>종목</span>
 					<span>기호</span>
@@ -103,10 +108,10 @@ const App = function () {
 					<span>
 						변동 <Small>지난 7일</Small>
 					</span>
-				</Table>
+				</TableRow>
 				{(!isError &&
 					filterData(data as CoinPaprika[])?.map((items) => (
-						<Table key={items.id}>
+						<TableRow key={items.id}>
 							<span>{items.rank}</span>
 							<span>{items.name}</span>
 							<span>{items.symbol}</span>
@@ -125,9 +130,9 @@ const App = function () {
 								<span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
 							)}
 							<span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
-						</Table>
+						</TableRow>
 					))) || <span>정보 없음</span>}
-			</Div>
+			</Table>
 		</>
 	);
 };
