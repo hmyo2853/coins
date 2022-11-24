@@ -1,7 +1,7 @@
 import styles from "./Tbody.module.css";
 
 interface Props extends React.PropsWithChildren {
-  rank: string;
+  rank: number;
   name: string;
   symbol: string;
   price: string;
