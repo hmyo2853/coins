@@ -70,7 +70,6 @@ const App = () => {
 
   useEffect(() => {
     fetchData();
-    console.log(data, typeof data, typeof data[1]);
   }, []);
 
   return (
