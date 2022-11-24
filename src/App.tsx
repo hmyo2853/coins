@@ -1,14 +1,16 @@
 // @ts-check
 
+/**
+ * React Query 참조
+ * @link https://kyounghwan01.github.io/blog/React/react-query/basic/#usequery
+ *
+ * CSS; Flex 이해하기
+ * @link https://studiomeal.com/archives/197
+ */
+
 import { ChangeEvent, useState } from "react";
-import styled from "styled-components";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAsync } from "react-async";
-import React from "react";
-
-/** 임시 데이터 */
-import mockData from "./assets/data.json";
 
 /** CSS */
 import "./App.css";
@@ -17,66 +19,62 @@ import "./App.css";
 // B -> Bold; 외부 컴포넌트 선언 대체
 import Bold from "./components/Bold";
 import Small from "./components/Small";
-import Div from "./components/Div";
+import TableRow from "./components/TableRow";
 // TableDiv -> Table; 외부 컴포넌트 선언 대체
 import Table from "./components/Table";
 import Button from "./components/Button";
 import Search from "./components/Search";
-
-const DataLoader = function () {
-	/** 데이터 가져오기 */
-	const getData = async () => {
-		const _fetch = await fetch(
-			`https://api.coinpaprika.com/v1/tickers?quotes=KRW`
-		);
-		return await _fetch.json();
-	};
-
-	return useAsync({
-		promiseFn: getData,
-	});
-};
+import { CoinPaprika } from "./coinpaprika";
+import { useQuery } from "react-query";
 
 const App = function () {
-	// const {
-	// 	data,
-	// 	isLoading,
-	// 	error,
-	// }: {
-	// 	data: any;
-	// 	isLoading: boolean;
-	// 	error: any;
-	// } = DataLoader();
+	/** 데이터 가져오기 */
+	const getData = async (): Promise<CoinPaprika[]> => {
+		const _fetch = await fetch(import.meta.env.VITE_REQUEST_URL);
 
-	// Test Code
-	const data = mockData;
-	const isLoading = false;
+		if (!_fetch.ok)
+			throw new Error(`HTTP Error: status code is ${_fetch.status}.`);
+
+		return _fetch.json();
+	};
 
 	const [searchText, setSearchText] = useState("");
 	const [isMouseOver, setRotate] = useState(false);
 
+	const { data, isLoading, isError, error, refetch } = useQuery(
+		"coins",
+		getData
+	);
+
 	const inputChangeText = (e: ChangeEvent) => {
-		setSearchText(e.target.value.replace(" ", ""));
+		setSearchText((e.target as HTMLInputElement).value.replace(" ", ""));
 	};
 
-	const onRefresh = () => {
-		window.location.reload();
-	};
+	/** state 변경되면서 리랜더링 */
+	const onRefresh = () => refetch();
 
-	const filterdData = data.filter((items) => {
-		if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
-			return items;
-		}
-	});
+	/** 검색어가 없는 경우, 검색어가 매칭되는 경우 필터링 */
+	const filterData = (data: CoinPaprika[] | undefined) =>
+		data?.filter(
+			(v) => !searchText || new RegExp(searchText, "i").test(v.name)
+		);
+
+	if (isError)
+		return (
+			<>
+				<strong>Unable to load data.</strong>
+				{(error as Error).message}
+			</>
+		);
+
+	if (isLoading) return <strong>Loading...</strong>;
 
 	return (
-		<div className={appStyles.Container}>
-			{isLoading ? (
-				<strong>Loading...</strong>
-			) : (
-				<>
-					<Bold>암호화폐 TOP 100 리스트</Bold>
-					<Search onChange={inputChangeText}></Search>
+		<>
+			<header>
+				<h2>암호화폐 TOP 100 리스트</h2>
+				<div>
+					<Search onChange={inputChangeText}></Search>{" "}
 					<Button
 						onClick={onRefresh}
 						onMouseOut={() => {
@@ -86,69 +84,84 @@ const App = function () {
 							setRotate(true);
 						}}
 					>
-						{isMouseOver ? (
-							<FontAwesomeIcon icon={faArrowsRotate} className="fa-spin" />
-						) : (
-							<FontAwesomeIcon icon={faArrowsRotate} />
-						)}
+						<FontAwesomeIcon
+							icon={faArrowsRotate}
+							className={isMouseOver ? "fa-spin" : ""}
+						/>
 					</Button>
-					<Div>
-						<Table>
-							<span>랭크</span>
-							<span>종목</span>
-							<span>기호</span>
-							<span>
-								현재 시세 <Small>KRW</Small>
-							</span>
-							<span>시가총액</span>
-							<span>
-								가격변동률 <Small>지난 24H</Small>
-							</span>
-							<span>
-								거래량 <Small>지난 24H</Small>
-							</span>
-							<span>
-								변동 <Small>지난 24H</Small>
-							</span>
-							<span>
-								변동 <Small>지난 7일</Small>
-							</span>
-						</Table>
-						{filterdData.length === 0 ? (
-							<>없습니다</>
-						) : (
-							filterdData.map((items) => (
-								<Table key={items.id}>
-									<span>{items.rank}</span>
-									<span>{items.name}</span>
-									<span>{items.symbol}</span>
-									<span>
-										{Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}
-										원
-									</span>
-									<span>
-										{Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
-											"ko-KR"
-										)}
-										원
-									</span>
-									<span>{items.quotes.KRW.market_cap_change_24h}%</span>
-									<span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
-									{Math.round(items.quotes.KRW.percent_change_24h) === 0 ? (
-										<span>0%</span>
-									) : (
-										<span>
-											{items.quotes.KRW.percent_change_24h.toFixed(2)}%
-										</span>
+				</div>
+			</header>
+
+			<br />
+			<br />
+
+			<Table>
+				<TableRow>
+					<span>랭크</span>
+					<span>종목</span>
+					<span>기호</span>
+					<span>
+						현재 시세 <Small>KRW</Small>
+					</span>
+					<span>시가총액</span>
+					<span>
+						가격변동률 <Small>지난 24H</Small>
+					</span>
+					<span>
+						거래량 <Small>지난 24H</Small>
+					</span>
+					<span>
+						변동 <Small>지난 24H</Small>
+					</span>
+					<span>
+						변동 <Small>지난 7일</Small>
+					</span>
+				</TableRow>
+				{(() => {
+					if (isError) {
+						return (
+							<div className="block">
+								<span>오류가 발생했습니다</span>
+								<br />
+								{(error as Error).message}
+							</div>
+						);
+					}
+
+					const _data = filterData(data as CoinPaprika[]);
+
+					if (!_data || _data?.length === 0)
+						return <div className="block">결과 없음.</div>;
+
+					return (
+						_data?.map((items) => (
+							<TableRow key={items.id}>
+								<span>{items.rank}</span>
+								<span>{items.name}</span>
+								<span>{items.symbol}</span>
+								<span>
+									{Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}원
+								</span>
+								<span>
+									{Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
+										"ko-KR"
 									)}
-									<span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
-								</Table>
-							))
-						)}
-					</Div>
-				</>
-			)}
-		</div>
+									원
+								</span>
+								<span>{items.quotes.KRW.market_cap_change_24h}%</span>
+								<span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
+								{Math.round(items.quotes.KRW.percent_change_24h) === 0 ? (
+									<span>0%</span>
+								) : (
+									<span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
+								)}
+								<span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
+							</TableRow>
+						)) || <TableRow></TableRow>
+					);
+				})()}
+			</Table>
+		</>
 	);
 };
 
