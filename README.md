@@ -21,5 +21,6 @@
 
 ## 구현 요구 사항 목록
 
+- [ ] coinpaprika API 연동
 - [ ] (첫번째) 검색 input value state에 따라 변경되는 리스트 구현
 - [ ] (두번째) 검색 input value stat와 필터 select option 선택에 따라 변경되는 리스트 구현
