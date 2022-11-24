@@ -11,6 +11,7 @@ import Search from "./components/Search";
 import Div from "./components/Div";
 import Table from "./components/Table";
 import Thead from "./components/Thead";
+import Tbody from "./components/Tbody";
 
 // const API_URL = "src/assets/data.json";
 const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
@@ -116,7 +117,20 @@ const App = () => {
               ) : (
                 filterdData.map((items) => (
                   <Table key={items.id}>
-                    <span>{items.rank}</span>
+                    <Tbody
+                      rank={items.rank}
+                      name={items.name}
+                      symbol={items.symbol}
+                      price={items.quotes.KRW.price.toLocaleString("ko-KR")}
+                      market_cap={items.quotes.KRW.market_cap}
+                      market_cap_change_24h={
+                        items.quotes.KRW.market_cap_change_24h
+                      }
+                      volume_24h={items.quotes.KRW.volume_24h}
+                      percent_change_24h={items.quotes.KRW.percent_change_24h}
+                      percent_change_7d={items.quotes.KRW.percent_change_7d}
+                    ></Tbody>
+                    {/* <span>{items.rank}</span>
                     <span>{items.name}</span>
                     <span>{items.symbol}</span>
                     <span>
@@ -138,7 +152,7 @@ const App = () => {
                     </span>
                     <span>
                       {items.quotes.KRW.percent_change_7d.toFixed(2)}%
-                    </span>
+                    </span> */}
                   </Table>
                 ))
               )}
