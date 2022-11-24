@@ -12,12 +12,13 @@ import Div from "./components/Div";
 import Table from "./components/Table";
 import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
+import { CoinPaprika } from "./coinpaprika";
 
 // const API_URL = "src/assets/data.json";
 const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
-  const [data, setData] = useState<Data[]>([]);
+  const [data, setData] = useState<CoinPaprika[]>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [isMouseOver, setRotate] = useState<boolean>(false);
@@ -32,34 +33,17 @@ const App = () => {
     return;
   };
 
-  const filterdData: Data[] = data.filter((items) => {
+  const filterdData: CoinPaprika[] = data?.filter((items) => {
     if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
       return items;
     }
   });
 
-  interface Data {
-    id?: string;
-    rank: string;
-    name: string;
-    symbol: string;
-    quotes: {
-      KRW: {
-        price: number;
-        market_cap: number;
-        market_cap_change_24h: number;
-        volume_24h: number;
-        percent_change_24h: number;
-        percent_change_7d: number;
-      };
-    };
-  }
-
-  const fetchData = async (): Promise<Data[] | void> => {
+  const fetchData = async (): Promise<CoinPaprika[] | void> => {
     try {
       const response = await fetch(API_URL);
       const json = await response.json();
-      const slice = json.slice(0, 100) as Data[];
+      const slice = json.slice(0, 100) as CoinPaprika[];
       setData(slice);
       setLoading(false);
     } catch (error) {
