@@ -83,6 +83,20 @@ const App = () => {
             className={isMouseOver ? "fa-spin" : ""}
           ></FontAwesomeIcon>
         </Button>
+        <select>
+          <option value="none" selected>
+            선택
+          </option>
+          <option value="rank">랭크</option>
+          <option value="name">종목</option>
+          <option value="symbol">기호</option>
+          <option value="price">현재 시세 KRW</option>
+          <option value="market_cap">시가 총액</option>
+          <option value="market_cap_change_24h">지난 24H 가격변동률</option>
+          <option value="volume_24h">지난 24H 거래량</option>
+          <option value="percent_change_24h">지난 24H 변동</option>
+          <option value="percent_change_7d">지난 7일 거래량</option>
+        </select>
       </div>
       <Div>
         <Table>
