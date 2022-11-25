@@ -110,31 +110,27 @@ const App = () => {
             }
 
             // 검색 data가 있음, mapping
-            return _filter?.map((items) => {});
+            return _filter?.map((items) => {
+              <>
+                <span>{items.rank}</span>
+                <span>{items.name}</span>
+                <span>{items.symbol}</span>
+                <span>
+                  {Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}원
+                </span>
+                <span>
+                  {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
+                    "ko-KR"
+                  )}
+                  원
+                </span>
+                <span>{items.quotes.KRW.market_cap_change_24h}%</span>
+                <span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
+                <span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
+                <span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
+              </>;
+            });
           }}
-          {/* <span>{items.rank}</span>
-                    <span>{items.name}</span>
-                    <span>{items.symbol}</span>
-                    <span>
-                      {Math.ceil(items.quotes.KRW.price).toLocaleString(
-                        "ko-KR"
-                      )}
-                      원
-                    </span>
-                    <span>
-                      {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
-                        "ko-KR"
-                      )}
-                      원
-                    </span>
-                    <span>{items.quotes.KRW.market_cap_change_24h}%</span>
-                    <span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
-                    <span>
-                      {items.quotes.KRW.percent_change_24h.toFixed(2)}%
-                    </span>
-                    <span>
-                      {items.quotes.KRW.percent_change_7d.toFixed(2)}%
-                    </span> */}
         </Table>
       </Div>
     </>
