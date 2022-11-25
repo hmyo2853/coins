@@ -46,13 +46,6 @@ const App = () => {
     return;
   };
 
-  // 검색어가 없는, 있는 경우의 필터 처리
-  // const filterdData: CoinPaprika[] = data?.filter((items) => {
-  //   if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
-  //     return items;
-  //   }
-  // });
-
   const filterData = (data: CoinPaprika[] | null) =>
     data?.filter((items) => {
       items.name.toLowerCase().includes(searchText.toLocaleLowerCase());
@@ -70,24 +63,27 @@ const App = () => {
   // isLoading true일때 return
   if (isLoading) return <strong>Loading...</strong>;
 
+  // isLoading true 이외 일때 (false)
   return (
     <>
       <Bold>암호화폐 TOP 100 리스트</Bold>
-      <Search onChange={inputChangeText}></Search>
-      <Button
-        onClick={onRefresh}
-        onMouseOver={() => {
-          setRotate(true);
-        }}
-        onMouseOut={() => {
-          setRotate(false);
-        }}
-      >
-        <FontAwesomeIcon
-          icon={faArrowsRotate}
-          className={isMouseOver ? "fa-spin" : ""}
-        ></FontAwesomeIcon>
-      </Button>
+      <div>
+        <Search onChange={inputChangeText}></Search>
+        <Button
+          onClick={onRefresh}
+          onMouseOver={() => {
+            setRotate(true);
+          }}
+          onMouseOut={() => {
+            setRotate(false);
+          }}
+        >
+          <FontAwesomeIcon
+            icon={faArrowsRotate}
+            className={isMouseOver ? "fa-spin" : ""}
+          ></FontAwesomeIcon>
+        </Button>
+      </div>
       <Div>
         <Table>
           <Thead
