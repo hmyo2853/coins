@@ -23,6 +23,11 @@ const App = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isMouseOver, setRotate] = useState<boolean>(false);
 
+  // input 값에 따라 변경되는 state 선언
+  const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.currentTarget.value.replace(" ", ""));
+  };
+
   // 데이터 가져오기
   const getData = async (): Promise<CoinPaprika[] | void> => {
     try {
@@ -36,11 +41,6 @@ const App = () => {
       // arror type
       console.log((e as Error).message);
     }
-  };
-
-  const inputChangeText = (e: ChangeEvent<HTMLInputElement>): void => {
-    setSearchText(e.currentTarget.value.replace(" ", ""));
-    return;
   };
 
   const onRefresh = (): void => {
@@ -74,14 +74,10 @@ const App = () => {
           setRotate(true);
         }}
       >
-        {isMouseOver ? (
-          <FontAwesomeIcon icon={faArrowsRotate}></FontAwesomeIcon>
-        ) : (
-          <FontAwesomeIcon
-            icon={faArrowsRotate}
-            className="fa-spin"
-          ></FontAwesomeIcon>
-        )}
+        <FontAwesomeIcon
+          icon={faArrowsRotate}
+          className={isMouseOver ? "fa-spin" : ""}
+        ></FontAwesomeIcon>
       </Button>
       <Div>
         <Table>
