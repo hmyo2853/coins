@@ -68,10 +68,10 @@ const App = () => {
       <Button
         onClick={onRefresh}
         onMouseOver={() => {
-          setRotate(false);
+          setRotate(true);
         }}
         onMouseOut={() => {
-          setRotate(true);
+          setRotate(false);
         }}
       >
         <FontAwesomeIcon
