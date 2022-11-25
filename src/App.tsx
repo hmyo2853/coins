@@ -32,11 +32,9 @@ const App = () => {
   const getData = async (): Promise<CoinPaprika[] | void> => {
     try {
       const response = await fetch(API_URL);
-      return response.json();
       const json = await response.json();
       const slice = json.slice(0, 100) as CoinPaprika[];
-      setData(slice);
-      setLoading(false);
+      return slice;
     } catch (e) {
       // arror type
       console.log((e as Error).message);
@@ -48,14 +46,25 @@ const App = () => {
     return;
   };
 
-  const filterdData: CoinPaprika[] = data?.filter((items) => {
-    if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
+  // 검색어가 없는, 있는 경우의 필터 처리
+  // const filterdData: CoinPaprika[] = data?.filter((items) => {
+  //   if (items.name.toLowerCase().includes(searchText.toLowerCase())) {
+  //     return items;
+  //   }
+  // });
+
+  const filterData = (data: CoinPaprika[] | null) =>
+    data?.filter((items) => {
+      items.name.toLowerCase().includes(searchText.toLocaleLowerCase());
       return items;
-    }
-  });
+    });
 
   useEffect(() => {
-    getData();
+    getData() //slice
+      .then((e) => {
+        setData(e || []);
+        setLoading(false);
+      });
   }, []);
 
   // isLoading true일때 return
@@ -92,23 +101,18 @@ const App = () => {
             percent_change_24h="지난 24H 변동"
             percent_change_7d="지난 7일 거래량"
           ></Thead>
-          {filterdData.length === 0 ? (
-            <>검색 항목과 일치하는 종목이 없습니다.</>
-          ) : (
-            filterdData.map((items) => (
-              <Table key={items.id}>
-                <Tbody
-                  rank={items.rank}
-                  name={items.name}
-                  symbol={items.symbol}
-                  price={items.quotes.KRW.price.toLocaleString("ko-KR")}
-                  market_cap={items.quotes.KRW.market_cap}
-                  market_cap_change_24h={items.quotes.KRW.market_cap_change_24h}
-                  volume_24h={items.quotes.KRW.volume_24h}
-                  percent_change_24h={items.quotes.KRW.percent_change_24h}
-                  percent_change_7d={items.quotes.KRW.percent_change_7d}
-                ></Tbody>
-                {/* <span>{items.rank}</span>
+          {() => {
+            const _filter = filterData(data as CoinPaprika[]);
+
+            // 검색 data가 없음
+            if (!_filter || _filter?.length === 0) {
+              return <div>결과 없음</div>;
+            }
+
+            // 검색 data가 있음, mapping
+            return _filter?.map((items) => {});
+          }}
+          {/* <span>{items.rank}</span>
                     <span>{items.name}</span>
                     <span>{items.symbol}</span>
                     <span>
@@ -131,9 +135,6 @@ const App = () => {
                     <span>
                       {items.quotes.KRW.percent_change_7d.toFixed(2)}%
                     </span> */}
-              </Table>
-            ))
-          )}
         </Table>
       </Div>
     </>
