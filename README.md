@@ -10,7 +10,7 @@
 - styled-components 사용
 - grid를 사용한 table ui 구현
 - vite로 create, dev, build(??)
-- github page가 아닌 vabel 로 배포
+- github page가 아닌 vacel 로 배포
 - React Query 사용
 
 <br>

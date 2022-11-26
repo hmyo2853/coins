@@ -4,7 +4,7 @@ interface Props extends React.PropsWithChildren {
   rank: number;
   name: string;
   symbol: string;
-  price: string;
+  price: number;
   market_cap: number;
   market_cap_change_24h: number;
   volume_24h: number;
@@ -28,12 +28,12 @@ const Tbody: React.FC<Props> = ({
       <span>{rank}</span>
       <span>{name}</span>
       <span>{symbol}</span>
-      <span>{price}원</span>
-      <span>{market_cap}</span>
-      <span>{market_cap_change_24h}%</span>
-      <span>{volume_24h}%</span>
-      <span>{percent_change_24h}%</span>
-      <span>{percent_change_7d}%</span>
+      <span>{price.toLocaleString("ko-KR")}원</span>
+      <span>{market_cap.toLocaleString("ko-KR")}원</span>
+      <span>{market_cap_change_24h.toLocaleString("ko-KR")}%</span>
+      <span>{volume_24h.toLocaleString("ko-KR")}</span>
+      <span>{percent_change_24h.toFixed(2)}%</span>
+      <span>{percent_change_7d.toFixed(2)}%</span>
     </div>
   );
 };
