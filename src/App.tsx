@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./App.css";
 
 import Bold from "./components/Bold";
-import Small from "./components/Small";
 import Button from "./components/Button";
 import Search from "./components/Search";
 import Thead from "./components/Thead";
