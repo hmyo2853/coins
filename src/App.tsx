@@ -8,7 +8,6 @@ import Bold from "./components/Bold";
 import Small from "./components/Small";
 import Button from "./components/Button";
 import Search from "./components/Search";
-import Table from "./components/Table";
 import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
 import { CoinPaprika } from "./coinpaprika";
@@ -108,12 +107,17 @@ const App = () => {
           rank="랭크"
           name="종목"
           symbol="기호"
-          price="현재 시세 KRW"
+          price="현재 시세"
+          krw="KRW"
           market_cap="시가 총액"
-          market_cap_change_24h="지난 24H 가격변동률"
-          volume_24h="지난 24H 거래량"
-          percent_change_24h="지난 24H 변동"
-          percent_change_7d="지난 7일 거래량"
+          market_cap_change_24h="가격변동률"
+          m_time="지난 24H"
+          volume_24h="거래량"
+          v_time="지난 24H"
+          percent_change_24h="변동"
+          p_24_time="지난 24H"
+          percent_change_7d="거래량"
+          p_7d_time="지난 7일"
         ></Thead>
         {
           // 검색 data가 없음
