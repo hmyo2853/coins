@@ -1,5 +1,5 @@
 .Tbody {
   padding: 10px 0;
   display: grid;
-  grid-template-columns: 1fr 3fr 3fr 4fr 4fr 4fr 4fr 3fr 3fr;
+  grid-template-columns: 1fr 4fr 1fr 4fr 5fr 3fr 4fr 2fr 3fr;
 }
