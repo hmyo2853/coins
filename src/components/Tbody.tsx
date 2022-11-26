@@ -29,7 +29,7 @@ const Tbody: React.FC<Props> = ({
       <span>{name}</span>
       <span>{symbol}</span>
       <span>{price.toLocaleString("ko-KR")}원</span>
-      <span>{market_cap}원</span>
+      <span>{market_cap.toLocaleString("ko-KR")}원</span>
       <span>{market_cap_change_24h.toLocaleString("ko-KR")}%</span>
       <span>{volume_24h.toLocaleString("ko-KR")}</span>
       <span>{percent_change_24h.toFixed(2)}%</span>

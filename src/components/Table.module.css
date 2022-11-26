@@ -1,4 +1,4 @@
 .Table {
-  width: 100%;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 3fr 3fr 4fr 4fr 4fr 4fr 3fr 3fr;
 }
