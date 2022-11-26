@@ -8,7 +8,6 @@ import Bold from "./components/Bold";
 import Small from "./components/Small";
 import Button from "./components/Button";
 import Search from "./components/Search";
-import Div from "./components/Div";
 import Table from "./components/Table";
 import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
@@ -41,16 +40,22 @@ const App = () => {
     }
   };
 
+  // 새로고침
   const onRefresh = (): void => {
     window.location.reload();
     return;
   };
 
+  // filter를 이용해서 data를 items로 가져오는 함수
   const filterData = (data: CoinPaprika[] | null) =>
     data?.filter((items) => {
-      items.name.toLowerCase().includes(searchText.toLocaleLowerCase());
-      return items;
+      if (items.name.toLowerCase().includes(searchText.toLocaleLowerCase())) {
+        return items;
+      }
     });
+
+  // mapping 될 filter data
+  const _filter = filterData(data as CoinPaprika[]);
 
   useEffect(() => {
     getData() //slice
@@ -84,7 +89,7 @@ const App = () => {
           ></FontAwesomeIcon>
         </Button>
         <select>
-          <option value="none" selected>
+          <option value="none" defaultValue="default">
             선택
           </option>
           <option value="rank">랭크</option>
@@ -98,30 +103,26 @@ const App = () => {
           <option value="percent_change_7d">지난 7일 거래량</option>
         </select>
       </div>
-      <Div>
-        <Table>
-          <Thead
-            rank="랭크"
-            name="종목"
-            symbol="기호"
-            price="현재 시세 KRW"
-            market_cap="시가 총액"
-            market_cap_change_24h="지난 24H 가격변동률"
-            volume_24h="지난 24H 거래량"
-            percent_change_24h="지난 24H 변동"
-            percent_change_7d="지난 7일 거래량"
-          ></Thead>
-          {() => {
-            const _filter = filterData(data as CoinPaprika[]);
-
-            // 검색 data가 없음
-            if (!_filter || _filter?.length === 0) {
-              return <div>결과 없음</div>;
-            }
-
+      <>
+        <Thead
+          rank="랭크"
+          name="종목"
+          symbol="기호"
+          price="현재 시세 KRW"
+          market_cap="시가 총액"
+          market_cap_change_24h="지난 24H 가격변동률"
+          volume_24h="지난 24H 거래량"
+          percent_change_24h="지난 24H 변동"
+          percent_change_7d="지난 7일 거래량"
+        ></Thead>
+        {
+          // 검색 data가 없음
+          !_filter || _filter?.length === 0 ? (
+            <div>결과 없음</div>
+          ) : (
             // 검색 data가 있음, mapping
-            return _filter?.map((items) => {
-              <>
+            _filter?.map((items) => (
+              <div key={items.id}>
                 <span>{items.rank}</span>
                 <span>{items.name}</span>
                 <span>{items.symbol}</span>
@@ -138,11 +139,11 @@ const App = () => {
                 <span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
                 <span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
                 <span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
-              </>;
-            });
-          }}
-        </Table>
-      </Div>
+              </div>
+            ))
+          )
+        }
+      </>
     </>
   );
 };

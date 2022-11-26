@@ -29,7 +29,7 @@ const Tbody: React.FC<Props> = ({
       <span>{name}</span>
       <span>{symbol}</span>
       <span>{price}원</span>
-      <span>{market_cap}</span>
+      <span>{market_cap}원</span>
       <span>{market_cap_change_24h}%</span>
       <span>{volume_24h}%</span>
       <span>{percent_change_24h}%</span>
