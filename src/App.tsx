@@ -16,7 +16,7 @@ const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
   const [data, setData] = useState<CoinPaprika[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const [isMouseOver, setRotate] = useState<boolean>(false);
 
@@ -118,27 +118,25 @@ const App = () => {
           percent_change_7d="거래량"
           p_7d_time="지난 7일"
         ></Thead>
-        {
-          // 검색 data가 없음
-          !_filter || _filter?.length === 0 ? (
-            <div>결과 없음</div>
-          ) : (
-            // 검색 data가 있음, mapping
-            _filter?.map((items) => (
-              <Tbody
-                rank={items.rank}
-                name={items.name}
-                symbol={items.symbol}
-                price={Math.ceil(items.quotes.KRW.price)}
-                market_cap={Math.ceil(items.quotes.KRW.market_cap)}
-                market_cap_change_24h={items.quotes.KRW.market_cap_change_24h}
-                volume_24h={Math.ceil(items.quotes.KRW.volume_24h)}
-                percent_change_24h={items.quotes.KRW.percent_change_24h}
-                percent_change_7d={items.quotes.KRW.percent_change_7d}
-              ></Tbody>
-            ))
-          )
-        }
+        {isLoading ? (
+          <strong>Loading....</strong>
+        ) : !_filter || _filter?.length === 0 ? (
+          <div>결과 없음</div>
+        ) : (
+          _filter?.map((items) => (
+            <Tbody
+              rank={items.rank}
+              name={items.name}
+              symbol={items.symbol}
+              price={Math.ceil(items.quotes.KRW.price)}
+              market_cap={Math.ceil(items.quotes.KRW.market_cap)}
+              market_cap_change_24h={items.quotes.KRW.market_cap_change_24h}
+              volume_24h={Math.ceil(items.quotes.KRW.volume_24h)}
+              percent_change_24h={items.quotes.KRW.percent_change_24h}
+              percent_change_7d={items.quotes.KRW.percent_change_7d}
+            ></Tbody>
+          ))
+        )}
       </>
     </>
   );
