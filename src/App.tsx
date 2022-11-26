@@ -122,24 +122,17 @@ const App = () => {
           ) : (
             // 검색 data가 있음, mapping
             _filter?.map((items) => (
-              <div key={items.id}>
-                <span>{items.rank}</span>
-                <span>{items.name}</span>
-                <span>{items.symbol}</span>
-                <span>
-                  {Math.ceil(items.quotes.KRW.price).toLocaleString("ko-KR")}원
-                </span>
-                <span>
-                  {Math.ceil(items.quotes.KRW.market_cap).toLocaleString(
-                    "ko-KR"
-                  )}
-                  원
-                </span>
-                <span>{items.quotes.KRW.market_cap_change_24h}%</span>
-                <span>{Math.ceil(items.quotes.KRW.volume_24h)}</span>
-                <span>{items.quotes.KRW.percent_change_24h.toFixed(2)}%</span>
-                <span>{items.quotes.KRW.percent_change_7d.toFixed(2)}%</span>
-              </div>
+              <Tbody
+                rank={items.rank}
+                name={items.name}
+                symbol={items.symbol}
+                price={Math.ceil(items.quotes.KRW.price)}
+                market_cap={Math.ceil(items.quotes.KRW.market_cap)}
+                market_cap_change_24h={items.quotes.KRW.market_cap_change_24h}
+                volume_24h={Math.ceil(items.quotes.KRW.volume_24h)}
+                percent_change_24h={items.quotes.KRW.percent_change_24h}
+                percent_change_7d={items.quotes.KRW.percent_change_7d}
+              ></Tbody>
             ))
           )
         }
