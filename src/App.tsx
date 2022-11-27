@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -19,10 +19,16 @@ const App = () => {
   const [isLoading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const [isMouseOver, setRotate] = useState<boolean>(false);
+  const [isSelectOption, setSelectOption] = useState<string>("name");
 
   // input 값에 따라 변경되는 state 선언
   const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.currentTarget.value.replace(" ", ""));
+  };
+
+  // option 선택시 필터 선택
+  const selectChange = (e: React.FormEvent<HTMLSelectElement>) => {
+    setSelectOption(e.currentTarget.value);
   };
 
   // 데이터 가져오기
@@ -47,8 +53,23 @@ const App = () => {
   // filter를 이용해서 data를 items로 가져오는 함수
   const filterData = (data: CoinPaprika[] | null) =>
     data?.filter((items) => {
-      if (items.name.toLowerCase().includes(searchText.toLocaleLowerCase())) {
-        return items;
+      switch (isSelectOption) {
+        case "name":
+          if (
+            items.name.toLowerCase().includes(searchText.toLocaleLowerCase())
+          ) {
+            return items;
+          }
+          break;
+        case "symbol":
+          if (
+            items.symbol.toLowerCase().includes(searchText.toLocaleLowerCase())
+          ) {
+            return items;
+          }
+          break;
+        default:
+          throw new Error(`unknown error : ${isSelectOption}`);
       }
     });
 
@@ -86,19 +107,16 @@ const App = () => {
             className={isMouseOver ? "fa-spin" : ""}
           ></FontAwesomeIcon>
         </Button>
-        <select>
-          <option value="none" defaultValue="default">
-            선택
-          </option>
-          <option value="rank">랭크</option>
+        <select onChange={selectChange} defaultValue="name">
+          {/* <option value="rank">랭크</option> */}
           <option value="name">종목</option>
           <option value="symbol">기호</option>
-          <option value="price">현재 시세 KRW</option>
+          {/* <option value="price">현재 시세 KRW</option>
           <option value="market_cap">시가 총액</option>
           <option value="market_cap_change_24h">지난 24H 가격변동률</option>
           <option value="volume_24h">지난 24H 거래량</option>
           <option value="percent_change_24h">지난 24H 변동</option>
-          <option value="percent_change_7d">지난 7일 거래량</option>
+          <option value="percent_change_7d">지난 7일 거래량</option> */}
         </select>
       </div>
       <>
@@ -124,17 +142,19 @@ const App = () => {
           <div>결과 없음</div>
         ) : (
           _filter?.map((items) => (
-            <Tbody
-              rank={items.rank}
-              name={items.name}
-              symbol={items.symbol}
-              price={Math.ceil(items.quotes.KRW.price)}
-              market_cap={Math.ceil(items.quotes.KRW.market_cap)}
-              market_cap_change_24h={items.quotes.KRW.market_cap_change_24h}
-              volume_24h={Math.ceil(items.quotes.KRW.volume_24h)}
-              percent_change_24h={items.quotes.KRW.percent_change_24h}
-              percent_change_7d={items.quotes.KRW.percent_change_7d}
-            ></Tbody>
+            <div key={items.id}>
+              <Tbody
+                rank={items.rank}
+                name={items.name}
+                symbol={items.symbol}
+                price={Math.ceil(items.quotes.KRW.price)}
+                market_cap={Math.ceil(items.quotes.KRW.market_cap)}
+                market_cap_change_24h={items.quotes.KRW.market_cap_change_24h}
+                volume_24h={Math.ceil(items.quotes.KRW.volume_24h)}
+                percent_change_24h={items.quotes.KRW.percent_change_24h}
+                percent_change_7d={items.quotes.KRW.percent_change_7d}
+              ></Tbody>
+            </div>
           ))
         )}
       </>
