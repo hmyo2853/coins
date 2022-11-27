@@ -24,7 +24,7 @@
 
 - [ ] React Query로 coinpaprika API 연동
 - [ ] API 연동 실패시 목업데이터 사용 및 로딩 페이지 생성
-- [O] (첫번째) 검색시 검색 키워드(`id, name :string`)에 따라 리스트 출력
-- [ ] (두번째) 검색시 검색 키워드(`rank, price , ...:number`)에 따라 리스트 출력
-- [ ] (세번째) 검색시 특정 검색 키워드(`price, market_cap, ...:number`)에 따라 근사치로 리스트 출력
+- [O] (step 1) 검색시 검색 키워드(`id, name :string`)에 따라 리스트 출력
+- [ ] (step 2) 검색시 검색 키워드(`rank, price , ...:number`)에 따라 리스트 출력
+- [ ] (step 3) 검색시 특정 검색 키워드(`price, market_cap, ...:number`)에 따라 근사치로 리스트 출력
 - [ ] 심플하고 가독성이 높은 UI 컴포넌트 구성
