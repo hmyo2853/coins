@@ -10,6 +10,7 @@ import Search from "./components/Search";
 import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
 import { CoinPaprika } from "./coinpaprika";
+import mockData from "./assets/data.json";
 
 // const API_URL = "src/assets/data.json";
 const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
@@ -19,7 +20,7 @@ const App = () => {
   const [isLoading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const [isMouseOver, setRotate] = useState<boolean>(false);
-  const [isSelectOption, setSelectOption] = useState<string>("name");
+  const [isSelectOption, setSelectOption] = useState<string>("");
 
   // input 값에 따라 변경되는 state 선언
   const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +38,7 @@ const App = () => {
       const response = await fetch(API_URL);
       const json = await response.json();
       const slice = json.slice(0, 100) as CoinPaprika[];
+      console.log("API 연동 success");
       return slice;
     } catch (e) {
       // arror type
@@ -53,23 +55,12 @@ const App = () => {
   // filter를 이용해서 data를 items로 가져오는 함수
   const filterData = (data: CoinPaprika[] | null) =>
     data?.filter((items) => {
-      switch (isSelectOption) {
-        case "name":
-          if (
-            items.name.toLowerCase().includes(searchText.toLocaleLowerCase())
-          ) {
-            return items;
-          }
-          break;
-        case "symbol":
-          if (
-            items.symbol.toLowerCase().includes(searchText.toLocaleLowerCase())
-          ) {
-            return items;
-          }
-          break;
-        default:
-          throw new Error(`unknown error : ${isSelectOption}`);
+      if (
+        items[isSelectOption]
+          .toLowerCase()
+          .includes(searchText.toLocaleLowerCase())
+      ) {
+        return items;
       }
     });
 
@@ -81,6 +72,7 @@ const App = () => {
       .then((e) => {
         setData(e || []);
         setLoading(false);
+        setSelectOption("name");
       });
   }, []);
 

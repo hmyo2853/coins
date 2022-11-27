@@ -35,4 +35,5 @@ export interface CoinPaprika {
   first_data_at: string;
   last_updated: string;
   quotes: Quote;
+  [key: string]: string;
 }
