@@ -11,6 +11,7 @@ import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
 import { CoinPaprika } from "./coinpaprika";
 import mockData from "./assets/data.json";
+import NoData from "./components/NoData";
 
 // const API_URL = "src/assets/data.json";
 const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
@@ -131,7 +132,7 @@ const App = () => {
         {isLoading ? (
           <strong>Loading....</strong>
         ) : !_filter || _filter?.length === 0 ? (
-          <div>결과 없음</div>
+          <NoData />
         ) : (
           _filter?.map((items) => (
             <div key={items.id}>
