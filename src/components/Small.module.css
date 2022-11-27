@@ -1,4 +1,7 @@
+@import "../variables.css";
+
 .Small {
   font-size: 0.6rem;
-  color: gray;
+  color: var(--color-small);
+  margin-left: 0.2rem;
 }

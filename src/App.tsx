@@ -123,7 +123,7 @@ const App = () => {
           m_time="지난 24H"
           volume_24h="거래량"
           v_time="지난 24H"
-          percent_change_24h="변동"
+          percent_change_24h="증감률"
           p_24_time="지난 24H"
           percent_change_7d="거래량"
           p_7d_time="지난 7일"
