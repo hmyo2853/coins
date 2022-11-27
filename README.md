@@ -10,7 +10,7 @@
 - styled-components 사용
 - grid를 사용한 table ui 구현
 - vite로 create, dev, build(??)
-- github page가 아닌 vacel 로 배포
+- github page가 아닌 vercel 로 배포
 - React Query 사용
 
 <br>
@@ -23,5 +23,8 @@
 ## 구현 요구 사항 목록
 
 - [ ] React Query로 coinpaprika API 연동
-- [ ] (첫번째) 검색 input value state에 따라 변경되는 리스트 구현
-- [ ] (두번째) 검색 input value stat와 필터 select option 선택에 따라 변경되는 리스트 구현
+- [ ] API 연동 실패시 목업데이터 사용 및 로딩 페이지 생성
+- [O] (첫번째) 검색시 검색 키워드(`id, name :string`)에 따라 리스트 출력
+- [ ] (두번째) 검색시 검색 키워드(`rank, price , ...:number`)에 따라 리스트 출력
+- [ ] (세번째) 검색시 특정 검색 키워드(`price, market_cap, ...:number`)에 따라 근사치로 리스트 출력
+- [ ] 심플하고 가독성이 높은 UI 컴포넌트 구성
