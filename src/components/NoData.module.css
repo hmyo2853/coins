@@ -1,0 +1,14 @@
+@import "../variables.css";
+
+.NoData {
+  margin: 0 auto;
+  padding-top: 20rem;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-gray);
+}
+
+.NoData :nth-child(2),
+.NoData :nth-child(3) {
+  padding-top: 0.5rem;
+}

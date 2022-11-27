@@ -1,5 +1,10 @@
+@import "../variables.css";
+
 .Tbody {
   padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
   display: grid;
-  grid-template-columns: 1fr 4fr 1fr 4fr 5fr 3fr 4fr 2fr 3fr;
+  grid-template-columns: 1fr 5fr 1fr 4fr 5fr 3fr 4fr 3fr 3fr;
+  font-size: 0.9rem;
+  color: var(--color-tbody);
 }

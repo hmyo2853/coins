@@ -11,7 +11,7 @@ const Search: React.FC<{
   <input
     className={styles.Search}
     type="text"
-    placeholder={placeholder || "종목을 입력해주세요."}
+    placeholder={placeholder || "검색어 입력"}
     maxLength={maxLength || 50}
     minLength={minLength || 1}
     onChange={onChange}

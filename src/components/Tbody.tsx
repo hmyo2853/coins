@@ -1,4 +1,7 @@
 import styles from "./Tbody.module.css";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "../variables.css";
 
 interface Props extends React.PropsWithChildren {
   rank: number;
@@ -30,7 +33,18 @@ const Tbody: React.FC<Props> = ({
       <span>{symbol}</span>
       <span>{price.toLocaleString("ko-KR")}원</span>
       <span>{market_cap.toLocaleString("ko-KR")}원</span>
-      <span>{market_cap_change_24h.toLocaleString("ko-KR")}%</span>
+      {market_cap_change_24h < 0 ? (
+        <span style={{ color: "var(--color-blue)" }}>
+          {market_cap_change_24h}% <FontAwesomeIcon icon={faCaretDown} />
+        </span>
+      ) : 0 < market_cap_change_24h ? (
+        <span style={{ color: "var(--color-red)" }}>
+          {market_cap_change_24h}% <FontAwesomeIcon icon={faCaretUp} />
+        </span>
+      ) : (
+        <span>{market_cap_change_24h}%</span>
+      )}
+
       <span>{volume_24h.toLocaleString("ko-KR")}</span>
       <span>{percent_change_24h.toFixed(2)}%</span>
       <span>{percent_change_7d.toFixed(2)}%</span>
