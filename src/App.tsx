@@ -21,7 +21,6 @@ const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
   const [searchText, setSearchText] = useState<string>("");
-  const [isMouseOver, setRotate] = useState<boolean>(false);
   const [isSelectOption, setSelectOption] = useState<string>("name");
 
   /** 데이터 가져오기 */
@@ -36,7 +35,7 @@ const App = () => {
   };
 
   /** useQuery */
-  const { data, isLoading, isError, error, refetch } = useQuery(
+  const { data, isLoading, isError, error } = useQuery(
     "coins", // 임의로 설정하는 queryKey
     getData
   );
@@ -49,9 +48,6 @@ const App = () => {
   const selectChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSelectOption(e.currentTarget.value);
   };
-
-  /** 새로고침 */
-  const onRefresh = () => refetch();
 
   /** 데이터가 있을 경우 조건에 맞는 데이터 필더링 */
   const filterData = (data: CoinPaprika[] | null) =>
@@ -85,20 +81,16 @@ const App = () => {
           <option value="symbol">기호</option>
         </select>
         <Search onChange={inputChangeText}></Search>
-        <Button
-          onClick={onRefresh}
-          onMouseOver={() => {
-            setRotate(true);
-          }}
-          onMouseOut={() => {
-            setRotate(false);
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faArrowsRotate}
-            className={isMouseOver ? "fa-spin" : ""}
-          ></FontAwesomeIcon>
-        </Button>
+      </div>
+      <div
+        style={{
+          fontSize: "12px",
+          textAlign: "right",
+          marginBottom: "0.5rem",
+          color: "gray",
+        }}
+      >
+        데이터는 실시간 자동 업데이트됩니다.
       </div>
       <>
         <Thead
