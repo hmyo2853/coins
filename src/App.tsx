@@ -22,7 +22,7 @@ const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 const App = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isMouseOver, setRotate] = useState<boolean>(false);
-  const [isSelectOption, setSelectOption] = useState<string>("");
+  const [isSelectOption, setSelectOption] = useState<string>("name");
 
   /** 데이터 가져오기 */
   const getData = (): Promise<CoinPaprika[] | void> => {
@@ -45,7 +45,7 @@ const App = () => {
     setSearchText(e.currentTarget.value.replace(" ", ""));
   };
 
-  // option 선택시 필터 선택
+  /** option 선택시 필터 value setting */
   const selectChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSelectOption(e.currentTarget.value);
   };
@@ -59,7 +59,8 @@ const App = () => {
       if (
         items[isSelectOption]
           .toLowerCase()
-          .includes(searchText.toLocaleLowerCase())
+          .includes(searchText.toLocaleLowerCase()) ||
+        searchText !== ""
       ) {
         return items;
       }
