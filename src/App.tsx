@@ -13,11 +13,10 @@ import Search from "./components/Search";
 import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
 import { CoinPaprika } from "./coinpaprika";
-import mockData from "./assets/data.json";
 import NoData from "./components/NoData";
 import { useQuery } from "react-query";
 
-// const API_URL = "src/assets/data.json";
+const MOCK_DATA = "src/assets/data.json";
 const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
@@ -36,8 +35,9 @@ const App = () => {
     });
   };
 
+  /** useQuery */
   const { data, isLoading, isError, error, refetch } = useQuery(
-    "coins",
+    "coins", // 임의로 설정하는 queryKey
     getData
   );
   /** input 값에 따라 변경되는 state 선언 */
@@ -71,21 +71,18 @@ const App = () => {
   // isLoading true일때 return
   if (isLoading) return <strong>Loading...</strong>;
 
+  // state error 일때 에러 처리
+  if (isError)
+    return <strong>${(error as Error).message} :: Unable to load data.</strong>;
+
   // isLoading true 이외 일때 (false)
   return (
     <>
       <Bold>암호화폐 TOP 100 리스트</Bold>
       <div>
         <select onChange={selectChange} defaultValue="name">
-          {/* <option value="rank">랭크</option> */}
           <option value="name">종목</option>
           <option value="symbol">기호</option>
-          {/* <option value="price">현재 시세 KRW</option>
-          <option value="market_cap">시가 총액</option>
-          <option value="market_cap_change_24h">지난 24H 가격변동률</option>
-          <option value="volume_24h">지난 24H 거래량</option>
-          <option value="percent_change_24h">지난 24H 변동</option>
-          <option value="percent_change_7d">지난 7일 거래량</option> */}
         </select>
         <Search onChange={inputChangeText}></Search>
         <Button
@@ -120,9 +117,7 @@ const App = () => {
           percent_change_7d="거래량"
           p_7d_time="지난 7일"
         ></Thead>
-        {isLoading ? (
-          <strong>Loading....</strong>
-        ) : !_filter || _filter?.length === 0 ? (
+        {!_filter || _filter?.length === 0 ? (
           <NoData />
         ) : (
           _filter?.map((items) => (
