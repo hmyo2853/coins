@@ -1,59 +1,55 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+// @ts-Check
+
+import React, { ChangeEvent, useState } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./App.css";
 
+/** 컴포넌트 */
 import Bold from "./components/Bold";
 import Button from "./components/Button";
 import Search from "./components/Search";
 import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
 import { CoinPaprika } from "./coinpaprika";
-import mockData from "./assets/data.json";
 import NoData from "./components/NoData";
+import { useQuery } from "react-query";
 
-// const API_URL = "src/assets/data.json";
+const MOCK_DATA = "src/assets/data.json";
 const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
-  const [data, setData] = useState<CoinPaprika[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
-  const [isMouseOver, setRotate] = useState<boolean>(false);
-  const [isSelectOption, setSelectOption] = useState<string>("");
+  const [isSelectOption, setSelectOption] = useState<string>("name");
 
-  // input 값에 따라 변경되는 state 선언
+  /** 데이터 가져오기 */
+  const getData = (): Promise<CoinPaprika[] | void> => {
+    return fetch(API_URL).then(async (_res) => {
+      if (!_res.ok)
+        throw new Error(`HTTP Error : status code is ${_res.status}`);
+      const json = await _res.json();
+      const slice = json.slice(0, 100) as CoinPaprika[];
+      return slice;
+    });
+  };
+
+  /** useQuery */
+  const { data, isLoading, isError, error } = useQuery(
+    "coins", // 임의로 설정하는 queryKey
+    getData
+  );
+  /** input 값에 따라 변경되는 state 선언 */
   const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.currentTarget.value.replace(" ", ""));
   };
 
-  // option 선택시 필터 선택
+  /** option 선택시 필터 value setting */
   const selectChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSelectOption(e.currentTarget.value);
   };
 
-  // 데이터 가져오기
-  const getData = async (): Promise<CoinPaprika[] | void> => {
-    try {
-      const response = await fetch(API_URL);
-      const json = await response.json();
-      const slice = json.slice(0, 100) as CoinPaprika[];
-      console.log("API 연동 success");
-      return slice;
-    } catch (e) {
-      // arror type
-      console.log((e as Error).message);
-    }
-  };
-
-  // 새로고침
-  const onRefresh = (): void => {
-    window.location.reload();
-    return;
-  };
-
-  // filter를 이용해서 data를 items로 가져오는 함수
+  /** 데이터가 있을 경우 조건에 맞는 데이터 필더링 */
   const filterData = (data: CoinPaprika[] | null) =>
     data?.filter((items) => {
       if (
@@ -65,20 +61,15 @@ const App = () => {
       }
     });
 
-  // mapping 될 filter data
+  /** 필터된 데이터 set */
   const _filter = filterData(data as CoinPaprika[]);
-
-  useEffect(() => {
-    getData() //slice
-      .then((e) => {
-        setData(e || []);
-        setLoading(false);
-        setSelectOption("name");
-      });
-  }, []);
 
   // isLoading true일때 return
   if (isLoading) return <strong>Loading...</strong>;
+
+  // state error 일때 에러 처리
+  if (isError)
+    return <strong>${(error as Error).message} :: Unable to load data.</strong>;
 
   // isLoading true 이외 일때 (false)
   return (
@@ -86,31 +77,20 @@ const App = () => {
       <Bold>암호화폐 TOP 100 리스트</Bold>
       <div>
         <select onChange={selectChange} defaultValue="name">
-          {/* <option value="rank">랭크</option> */}
           <option value="name">종목</option>
           <option value="symbol">기호</option>
-          {/* <option value="price">현재 시세 KRW</option>
-          <option value="market_cap">시가 총액</option>
-          <option value="market_cap_change_24h">지난 24H 가격변동률</option>
-          <option value="volume_24h">지난 24H 거래량</option>
-          <option value="percent_change_24h">지난 24H 변동</option>
-          <option value="percent_change_7d">지난 7일 거래량</option> */}
         </select>
         <Search onChange={inputChangeText}></Search>
-        <Button
-          onClick={onRefresh}
-          onMouseOver={() => {
-            setRotate(true);
-          }}
-          onMouseOut={() => {
-            setRotate(false);
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faArrowsRotate}
-            className={isMouseOver ? "fa-spin" : ""}
-          ></FontAwesomeIcon>
-        </Button>
+      </div>
+      <div
+        style={{
+          fontSize: "12px",
+          textAlign: "right",
+          marginBottom: "0.5rem",
+          color: "gray",
+        }}
+      >
+        데이터는 실시간 자동 업데이트됩니다.
       </div>
       <>
         <Thead
@@ -129,9 +109,7 @@ const App = () => {
           percent_change_7d="거래량"
           p_7d_time="지난 7일"
         ></Thead>
-        {isLoading ? (
-          <strong>Loading....</strong>
-        ) : !_filter || _filter?.length === 0 ? (
+        {!_filter || _filter?.length === 0 ? (
           <NoData />
         ) : (
           _filter?.map((items) => (
