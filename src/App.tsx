@@ -25,6 +25,17 @@ const App = () => {
   const [isMouseOver, setRotate] = useState<boolean>(false);
   const [isSelectOption, setSelectOption] = useState<string>("");
 
+  /** 데이터 가져오기 */
+  const getData = (): Promise<CoinPaprika[] | void> => {
+    return fetch(API_URL).then(async (_res) => {
+      if (!_res.ok)
+        throw new Error(`HTTP Error : status code is ${_res.status}`);
+      const json = await _res.json();
+      const slice = json.slice(0, 100) as CoinPaprika[];
+      return slice;
+    });
+  };
+
   const { data, isLoading, isError, error, refetch } = useQuery(
     "coins",
     getData
@@ -39,24 +50,10 @@ const App = () => {
     setSelectOption(e.currentTarget.value);
   };
 
-  /** 데이터 가져오기 */
-  const getData = async (): Promise<CoinPaprika[] | void> => {
-    try {
-      const response = await fetch(API_URL);
-      const json = await response.json();
-      const slice = json.slice(0, 100) as CoinPaprika[];
-      console.log("API 연동 success");
-      return slice;
-    } catch (e) {
-      // arror type
-      console.log((e as Error).message);
-    }
-  };
-
   /** 새로고침 */
   const onRefresh = () => refetch();
 
-  // filter를 이용해서 data를 items로 가져오는 함수
+  /** 데이터가 있을 경우 조건에 맞는 데이터 필더링 */
   const filterData = (data: CoinPaprika[] | null) =>
     data?.filter((items) => {
       if (
@@ -68,17 +65,8 @@ const App = () => {
       }
     });
 
-  // mapping 될 filter data
+  /** 필터된 데이터 set */
   const _filter = filterData(data as CoinPaprika[]);
-
-  useEffect(() => {
-    getData() //slice
-      .then((e) => {
-        setData(e || []);
-        setLoading(false);
-        setSelectOption("name");
-      });
-  }, []);
 
   // isLoading true일때 return
   if (isLoading) return <strong>Loading...</strong>;
