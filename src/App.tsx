@@ -1,9 +1,12 @@
+// @ts-Check
+
 import React, { ChangeEvent, useState, useEffect } from "react";
 import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./App.css";
 
+/** 컴포넌트 */
 import Bold from "./components/Bold";
 import Button from "./components/Button";
 import Search from "./components/Search";
@@ -12,18 +15,21 @@ import Tbody from "./components/Tbody";
 import { CoinPaprika } from "./coinpaprika";
 import mockData from "./assets/data.json";
 import NoData from "./components/NoData";
+import { useQuery } from "react-query";
 
 // const API_URL = "src/assets/data.json";
 const API_URL = "https://api.coinpaprika.com/v1/tickers?quotes=KRW";
 
 const App = () => {
-  const [data, setData] = useState<CoinPaprika[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(true);
   const [searchText, setSearchText] = useState<string>("");
   const [isMouseOver, setRotate] = useState<boolean>(false);
   const [isSelectOption, setSelectOption] = useState<string>("");
 
-  // input 값에 따라 변경되는 state 선언
+  const { data, isLoading, isError, error, refetch } = useQuery(
+    "coins",
+    getData
+  );
+  /** input 값에 따라 변경되는 state 선언 */
   const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.currentTarget.value.replace(" ", ""));
   };
@@ -33,7 +39,7 @@ const App = () => {
     setSelectOption(e.currentTarget.value);
   };
 
-  // 데이터 가져오기
+  /** 데이터 가져오기 */
   const getData = async (): Promise<CoinPaprika[] | void> => {
     try {
       const response = await fetch(API_URL);
@@ -47,11 +53,8 @@ const App = () => {
     }
   };
 
-  // 새로고침
-  const onRefresh = (): void => {
-    window.location.reload();
-    return;
-  };
+  /** 새로고침 */
+  const onRefresh = () => refetch();
 
   // filter를 이용해서 data를 items로 가져오는 함수
   const filterData = (data: CoinPaprika[] | null) =>
