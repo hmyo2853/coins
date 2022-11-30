@@ -59,8 +59,7 @@ const App = () => {
       if (
         items[isSelectOption]
           .toLowerCase()
-          .includes(searchText.toLocaleLowerCase()) ||
-        searchText !== ""
+          .includes(searchText.toLocaleLowerCase())
       ) {
         return items;
       }
