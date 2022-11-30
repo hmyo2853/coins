@@ -24,7 +24,7 @@ const App = () => {
   const [isSelectOption, setSelectOption] = useState<string>("name");
 
   /** 데이터 가져오기 */
-  const getData = (): Promise<CoinPaprika[] | void> => {
+  const getData = async (): Promise<CoinPaprika[] | void> => {
     return fetch(API_URL).then(async (_res) => {
       if (!_res.ok)
         throw new Error(`HTTP Error : status code is ${_res.status}`);
@@ -39,6 +39,7 @@ const App = () => {
     "coins", // 임의로 설정하는 queryKey
     getData
   );
+
   /** input 값에 따라 변경되는 state 선언 */
   const inputChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.currentTarget.value.replace(" ", ""));
@@ -65,7 +66,8 @@ const App = () => {
   const _filter = filterData(data as CoinPaprika[]);
 
   // isLoading true일때 return
-  if (isLoading) return <strong>Loading...</strong>;
+  if (isLoading)
+    return <strong style={{ marginTop: "44%" }}>Loading...</strong>;
 
   // state error 일때 에러 처리
   if (isError)
