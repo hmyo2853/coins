@@ -1,6 +1,6 @@
 # Toy Project - Coins Top 100 List
 
-![coin-top-100-list]('/coverimg_coins.PNG')
+<img src="https://github.com/hmyo2853/coins/blob/main/coverimg_coins.PNG?raw=true" width="200" height="200" alt="coverimg_coins.PNG"/>
 
 ## 토이 프로젝트 진행 목적
 
