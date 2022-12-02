@@ -22,7 +22,7 @@ const App = () => {
 
   /** 데이터 가져오기 */
   const getData = async (): Promise<CoinPaprika[] | void> => {
-    fetch(API_URL).then(async (_res) => {
+    return fetch(API_URL).then(async (_res) => {
       if (!_res.ok)
         throw new Error(`HTTP Error : status code is ${_res.status}`);
       const json = await _res.json();
