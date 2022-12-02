@@ -1,6 +1,6 @@
 # Toy Project - Coins Top 100 List
 
-![coverimg]('')
+![coin-top-100-list]('/coverimg_coins.PNG')
 
 ## 토이 프로젝트 진행 목적
 
@@ -9,7 +9,7 @@
 - async, await로 비동기 프로그래밍 코드 작성
 - styled-components 사용
 - grid를 사용한 table ui 구현
-- vite로 create, dev, build(??)
+- vite로 create, dev(test)
 - github page가 아닌 vercel 로 배포
 - React Query 사용
 
@@ -18,13 +18,13 @@
 
 ## 최종 구현 화면
 
-- ??? link
+- [vercel - https://coins-hmyo2853.vercel.app/](https://coins-hmyo2853.vercel.app/)
 
 ## 구현 요구 사항 목록
 
-- [ ] React Query로 coinpaprika API 연동
-- [ ] API 연동 실패시 목업데이터 사용 및 로딩 페이지 생성
+- [O] React Query로 coinpaprika API 연동
+- [O] 로딩 페이지, 필터된 항목 없을때 페이지 컴포넌트 구현
 - [O] (step 1) 검색시 검색 키워드(`id, name :string`)에 따라 리스트 출력
 - [ ] (step 2) 검색시 검색 키워드(`rank, price , ...:number`)에 따라 리스트 출력
 - [ ] (step 3) 검색시 특정 검색 키워드(`price, market_cap, ...:number`)에 따라 근사치로 리스트 출력
-- [ ] 심플하고 가독성이 높은 UI 컴포넌트 구성
+- [O] 심플하고 가독성이 높은 UI 컴포넌트 구성
