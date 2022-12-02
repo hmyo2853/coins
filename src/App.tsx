@@ -1,14 +1,11 @@
 // @ts-Check
 
 import React, { ChangeEvent, useState } from "react";
-import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "./App.css";
 
 /** 컴포넌트 */
 import Bold from "./components/Bold";
-import Button from "./components/Button";
 import Search from "./components/Search";
 import Thead from "./components/Thead";
 import Tbody from "./components/Tbody";
